@@ -56,9 +56,29 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
 .ctrl-label{font-size:13px;color:var(--color-text-secondary);min-width:72px}
 .ctrl-row input[type=range]{flex:1}
 .ctrl-val{font-size:13px;font-weight:500;min-width:28px;text-align:right;color:var(--color-text-primary)}
+.ctrl-block{border-top:0.5px solid var(--color-border-tertiary);padding-top:.8rem;margin-top:.8rem}
+.ctrl-title{font-size:13px;font-weight:700;color:var(--color-text-primary);margin-bottom:.55rem}
 .pills{display:flex;gap:8px;flex-wrap:wrap}
 .pill{font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .15s;user-select:none}
 .pill.active{background:#eaf2ff;color:#276fcd;border-color:#4f8eed}
+.resize-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.resize-input-wrap{display:flex;flex-direction:column;gap:.35rem}
+.resize-input-wrap label{font-size:12px;color:var(--color-text-secondary)}
+.resize-input{width:100%;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.48rem .55rem;background:#fff;color:var(--color-text-primary)}
+.resize-check{display:flex;align-items:center;gap:.45rem;font-size:12px;line-height:1.45;color:var(--color-text-secondary);margin-top:.6rem;cursor:pointer}
+.resize-check input{width:14px;height:14px;flex:0 0 14px}
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+.mode-tab{border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);border-radius:9px;padding:.45rem .55rem;font-size:12px;font-weight:700;cursor:pointer}
+.mode-tab.active{background:#eaf2ff;border-color:#4f8eed;color:#276fcd}
+.tab-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-right:.35rem;opacity:.95}
+.tab-icon-box{border:1.5px solid currentColor;border-radius:2px;position:relative}
+.tab-icon-box:before,.tab-icon-box:after{content:'';position:absolute;background:currentColor}
+.tab-icon-box:before{width:1.5px;height:8px;left:5px;top:1px}
+.tab-icon-box:after{width:8px;height:1.5px;left:1px;top:5px}
+.tab-icon-ratio{font-size:12px;font-weight:700}
+.ratio-row{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.ratio-input{width:92px;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.42rem .5rem;background:#fff;color:var(--color-text-primary)}
+.hidden{display:none !important}
 .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
 @media(max-width:520px){.preview-grid{grid-template-columns:1fr}}
 @media(max-width:520px){
@@ -68,6 +88,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
   .tool-title{font-size:1.55rem}
   .drop-title{min-width:0;width:100%;font-size:1.5rem}
   .drop-sub{font-size:.95rem}
+  .resize-grid{grid-template-columns:1fr}
 }
 .preview-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;display:none}
 .preview-card img{width:100%;display:block;max-height:200px;object-fit:contain;background:var(--color-background-secondary)}
@@ -140,6 +161,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
   .guide-list li{background:#18202b;border-color:#2f3f58}
   .drop-zone { background: #252525; }
   .pill { background: #333; color: #bbb; }
+  .resize-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
+  .mode-tab{background:#243044;border-color:#3a4c67;color:#b9c7de}
+  .mode-tab.active{background:#29446f;border-color:#4f8eed;color:#eef5ff}
+  .ratio-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
   .modal-card{background:#1d222b;border-color:#31405a}
   .modal-close{background:#202a39;border-color:#394c69;color:#e8efff}
   .modal-close:hover{background:#2a3950}
@@ -186,14 +211,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
   <div class="ad-banner">広告スペース（AdSense をここに貼る）</div>
 
   <div class="wasm-status" id="wasmStatus">
-    <span class="wasm-dot" id="wasmDot"></span><span id="wasmLabel">libheif-wasm を読み込み中...</span>
+    <span class="wasm-dot" id="wasmDot"></span><span id="wasmLabel">HEIC Converterを読み込み中...</span>
   </div>
 
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput" accept=".heic,.HEIC,.jpg,.jpeg,.png,image/heic,image/jpeg,image/png">
     <div class="drop-icon">&#128247;</div>
     <div class="drop-title">画像をドロップ または タップして選択</div>
-    <div class="drop-sub">HEIC / JPEG / PNG — Chrome・Safari 対応</div>
+    <div class="drop-sub">HEIC / JPEG / PNG — WebP / JPEG / PNG 変換対応</div>
   </div>
 
   <div class="loader-row" id="loaderRow">
@@ -211,21 +236,59 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
       <input type="range" id="quality" min="10" max="95" step="1" value="80">
       <span class="ctrl-val" id="qualityVal">80</span>
     </div>
-    <div class="ctrl-row">
-      <span class="ctrl-label">リサイズ</span>
-      <div class="pills" id="resizePills">
-        <span class="pill active" data-w="0">原寸</span>
-        <span class="pill" data-w="1920">1920px</span>
-        <span class="pill" data-w="1280">1280px</span>
-        <span class="pill" data-w="800">800px</span>
+    <div class="ctrl-block">
+      <div class="ctrl-title">画像圧縮</div>
+      <div class="ctrl-row" style="margin-bottom:.5rem;">
+        <span class="ctrl-label">圧縮レベル</span>
+        <div class="pills" id="compressPills">
+          <span class="pill active" data-q="80">標準</span>
+          <span class="pill" data-q="65">強め</span>
+          <span class="pill" data-q="50">最大</span>
+        </div>
       </div>
     </div>
-    <div class="ctrl-row">
-      <span class="ctrl-label">オプション</span>
-      <label style="font-size: 13px; color: var(--color-text-secondary); cursor: pointer;">
-        <input type="checkbox" id="keepExif" checked> EXIF情報（撮影日時など）を保持する
+    <div class="ctrl-block">
+      <div class="ctrl-title">サイズ変更オプション</div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="resizeModePixel" type="button"><span class="tab-icon tab-icon-box"></span>ピクセルで</button>
+        <button class="mode-tab" id="resizeModeRatio" type="button"><span class="tab-icon tab-icon-ratio">%</span>比率で</button>
+      </div>
+      <div id="pixelResizePanel">
+        <div class="resize-grid">
+          <div class="resize-input-wrap">
+            <label for="resizeWidth">幅 (px)</label>
+            <input class="resize-input" id="resizeWidth" type="number" min="1" step="1" placeholder="元画像の幅">
+          </div>
+          <div class="resize-input-wrap">
+            <label for="resizeHeight">高さ (px)</label>
+            <input class="resize-input" id="resizeHeight" type="number" min="1" step="1" placeholder="元画像の高さ">
+          </div>
+        </div>
+      </div>
+      <div id="ratioResizePanel" style="display:none">
+        <div class="ratio-row">
+          <div class="pills" id="ratioPills">
+            <span class="pill" data-ratio="25">25%</span>
+            <span class="pill" data-ratio="50">50%</span>
+            <span class="pill" data-ratio="75">75%</span>
+            <span class="pill active" data-ratio="100">100%</span>
+          </div>
+          <input class="ratio-input" id="ratioInput" type="number" min="1" max="400" step="1" value="100" aria-label="リサイズ比率（パーセント）">
+        </div>
+      </div>
+      <label class="resize-check" id="lockAspectRow">
+        <input type="checkbox" id="lockAspect" checked>
+        <span>横縦比を維持</span>
+      </label>
+      <label class="resize-check" id="preventUpscaleRow">
+        <input type="checkbox" id="preventUpscale" checked>
+        <span>縮小の場合は拡大しないでください</span>
       </label>
     </div>
+    <label class="resize-check" id="keepExifRow">
+      <input type="checkbox" id="keepExif" checked>
+      <span>EXIF情報（撮影日時など）を保持する</span>
+    </label>
   </div>
 
   <div class="preview-grid">
@@ -349,7 +412,12 @@ let heifDecoder = null;
 let currentFile = null;
 let currentCanvas = null;
 let selectedFmt = 'jpeg';
-let selectedWidth = 0;
+let resizeMode = 'pixel';
+let resizeWidth = 0;
+let resizeHeight = 0;
+let resizeRatio = 100;
+let originalWidth = 0;
+let originalHeight = 0;
 let outputBlob = null;
 
 function fmt(b){
@@ -424,10 +492,10 @@ async function initLibheif(){
     const lib = await libheif();
     heifDecoder = new lib.HeifDecoder();
     $('wasmDot').className = 'wasm-dot ready';
-    $('wasmLabel').textContent = 'libheif-wasm 準備完了（Chrome・Safari 対応）';
+    $('wasmLabel').textContent = 'HEIC Converter準備完了（Chrome・Safari 対応）';
   }catch(e){
     $('wasmDot').className = 'wasm-dot';
-    $('wasmLabel').textContent = 'libheif 初期化エラー: '+e.message;
+    $('wasmLabel').textContent = 'HEIC Converter初期化エラー: '+e.message;
   }
 }
 initLibheif();
@@ -457,15 +525,92 @@ function buildFmtPills(fmt, def){
   $('qualityRow').style.display = def==='png'?'none':'flex';
 }
 
-$('resizePills').querySelectorAll('.pill').forEach(p=>{
+$('quality').oninput = () => $('qualityVal').textContent = $('quality').value;
+$('compressPills').querySelectorAll('.pill').forEach(p=>{
   p.onclick=()=>{
-    $('resizePills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    $('compressPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
     p.classList.add('active');
-    selectedWidth = parseInt(p.dataset.w)||0;
+    $('quality').value = p.dataset.q;
+    $('qualityVal').textContent = p.dataset.q;
   };
 });
 
-$('quality').oninput = () => $('qualityVal').textContent = $('quality').value;
+function fillResizeInputs(w, h){
+  originalWidth = w;
+  originalHeight = h;
+  resizeWidth = w;
+  resizeHeight = h;
+  resizeRatio = 100;
+  $('resizeWidth').value = w;
+  $('resizeHeight').value = h;
+  $('ratioInput').value = 100;
+  $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+  const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
+  if(defaultRatioPill) defaultRatioPill.classList.add('active');
+}
+
+$('resizeWidth').addEventListener('input', ()=>{
+  const w = parseInt($('resizeWidth').value, 10);
+  if(!w || w < 1){ resizeWidth = 0; return; }
+  resizeWidth = w;
+  if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+    const h = Math.max(1, Math.round((w / originalWidth) * originalHeight));
+    resizeHeight = h;
+    $('resizeHeight').value = h;
+  }
+});
+$('resizeHeight').addEventListener('input', ()=>{
+  const h = parseInt($('resizeHeight').value, 10);
+  if(!h || h < 1){ resizeHeight = 0; return; }
+  resizeHeight = h;
+  if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+    const w = Math.max(1, Math.round((h / originalHeight) * originalWidth));
+    resizeWidth = w;
+    $('resizeWidth').value = w;
+  }
+});
+function setResizeMode(mode){
+  resizeMode = mode;
+  const isPixel = mode === 'pixel';
+  $('resizeModePixel').classList.toggle('active', isPixel);
+  $('resizeModeRatio').classList.toggle('active', !isPixel);
+  $('pixelResizePanel').style.display = isPixel ? 'block' : 'none';
+  $('ratioResizePanel').style.display = isPixel ? 'none' : 'block';
+  // 比率モードでは縦横比固定のため、関連チェックは非表示にする
+  $('lockAspectRow').classList.toggle('hidden', !isPixel);
+  $('preventUpscaleRow').classList.toggle('hidden', !isPixel);
+  if(!isPixel){
+    // 比率モードでは上限を100%にして拡大を防止
+    if((parseInt($('ratioInput').value, 10) || 100) > 100){
+      $('ratioInput').value = 100;
+      resizeRatio = 100;
+      $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
+      if(defaultRatioPill) defaultRatioPill.classList.add('active');
+    }
+  }
+}
+$('resizeModePixel').onclick = ()=>setResizeMode('pixel');
+$('resizeModeRatio').onclick = ()=>setResizeMode('ratio');
+$('ratioPills').querySelectorAll('.pill').forEach(p=>{
+  p.onclick = ()=>{
+    $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    const val = parseInt(p.dataset.ratio, 10);
+    resizeRatio = val;
+    $('ratioInput').value = val;
+  };
+});
+$('ratioInput').addEventListener('input', ()=>{
+  const val = parseInt($('ratioInput').value, 10);
+  if(!val || val < 1){ resizeRatio = 0; return; }
+  const max = resizeMode === 'ratio' ? 100 : 400;
+  resizeRatio = Math.min(max, val);
+  $('ratioInput').value = resizeRatio;
+  $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+  const matched = $('ratioPills').querySelector('[data-ratio="'+resizeRatio+'"]');
+  if(matched) matched.classList.add('active');
+});
 
 const menuBtn = $('menuBtn');
 const topMenu = $('topMenu');
@@ -659,6 +804,7 @@ async function loadFile(file){
       });
 
       currentCanvas = canvas;
+      fillResizeInputs(w, h);
       const url = canvas.toDataURL('image/jpeg',0.7);
       showBefore(url, file.name, file.size, 'heic', w+'×'+h);
       buildFmtPills(fmtOptions.heic, 'jpeg');
@@ -679,6 +825,7 @@ async function loadFile(file){
       canvas.height = imgEl.naturalHeight;
       canvas.getContext('2d').drawImage(imgEl, 0, 0);
       currentCanvas = canvas;
+      fillResizeInputs(imgEl.naturalWidth, imgEl.naturalHeight);
       showBefore(url, file.name, file.size, origFmt, imgEl.naturalWidth+'×'+imgEl.naturalHeight);
       const def = origFmt==='png'?'webp':'jpeg';
       buildFmtPills(fmtOptions[origFmt]||fmtOptions.jpeg, def);
@@ -710,11 +857,37 @@ $('btnConvert').onclick = async()=>{
   try{
     await new Promise(r=>setTimeout(r,30));
     const canvas = document.createElement('canvas');
-    let w = currentCanvas.width, h = currentCanvas.height;
-    if(selectedWidth>0 && w>selectedWidth){
-      h = Math.round(h*(selectedWidth/w));
-      w = selectedWidth;
+    let w = currentCanvas.width;
+    let h = currentCanvas.height;
+
+    if(resizeMode === 'ratio'){
+      const ratio = (parseInt($('ratioInput').value, 10) || resizeRatio || 100) / 100;
+      w = Math.max(1, Math.round(currentCanvas.width * ratio));
+      h = Math.max(1, Math.round(currentCanvas.height * ratio));
+      $('resizeWidth').value = w;
+      $('resizeHeight').value = h;
+    }else{
+      w = parseInt($('resizeWidth').value, 10) || currentCanvas.width;
+      h = parseInt($('resizeHeight').value, 10) || currentCanvas.height;
+      if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+        const fromW = Math.max(1, Math.round((w / originalWidth) * originalHeight));
+        h = fromW;
+        $('resizeHeight').value = h;
+      }
     }
+    const shouldLockAspect = resizeMode === 'ratio' ? true : $('lockAspect').checked;
+    const shouldPreventUpscale = resizeMode === 'ratio' ? true : $('preventUpscale').checked;
+    if(shouldPreventUpscale){
+      if(shouldLockAspect){
+        const ratio = Math.min(currentCanvas.width / w, currentCanvas.height / h, 1);
+        w = Math.max(1, Math.round(w * ratio));
+        h = Math.max(1, Math.round(h * ratio));
+      }else{
+        w = Math.min(w, currentCanvas.width);
+        h = Math.min(h, currentCanvas.height);
+      }
+    }
+
     canvas.width = w; canvas.height = h;
     canvas.getContext('2d').drawImage(currentCanvas, 0, 0, w, h);
 
