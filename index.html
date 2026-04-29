@@ -186,7 +186,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
       </button>
       <div class="menu-panel" id="topMenu" role="menu">
         <button class="menu-item" id="openTermsBtn" role="menuitem">利用規約</button>
-        <button class="menu-item" id="openPrivacyBtn" role="menuitem">プライバシーポリシー</button>
+        <a class="menu-item" id="openPrivacyBtn" role="menuitem" href="privacy.html" style="display:block;text-decoration:none;">プライバシーポリシー</a>
         <button class="menu-item" id="openContactBtn" role="menuitem">お問い合わせ</button>
       </div>
     </div>
@@ -332,33 +332,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-
       <h3 style="font-size:14px;margin:.5rem 0;">3. 免責</h3>
       <p>本サービスの利用により生じた損害について、運営者は責任を負いません。必要に応じてデータのバックアップを行ってください。</p>
     </div>
-  </section>
-</div>
-
-<div class="modal-backdrop" id="privacyModal" aria-hidden="true">
-  <section class="modal-card content-section guide-section" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
-    <div class="modal-head">
-      <h2 class="modal-title" id="privacyTitle">プライバシーポリシー</h2>
-      <button class="modal-close" id="closePrivacyBtn" aria-label="プライバシーポリシーを閉じる">閉じる</button>
-    </div>
-    <p style="margin-bottom: 1rem;">当サイトでは、以下の通りプライバシーの保護に努めております。</p>
-    
-    <h3 style="font-size: 14px; margin-bottom: 0.5rem; color: var(--color-text-primary);">1. 画像データの取り扱いについて</h3>
-    <p style="margin-bottom: 1rem;">
-      当サイトで変換される画像データは、<strong>ユーザー様のブラウザ内でのみ処理されます。</strong><br>
-      変換処理のために画像データがサーバーへアップロード・保存・共有されることは一切ありません。変換後はブラウザのメモリから破棄されるため、安心してご利用いただけます。
-    </p>
-
-    <h3 style="font-size: 14px; margin-bottom: 0.5rem; color: var(--color-text-primary);">2. 広告の配信について</h3>
-    <p style="margin-bottom: 1rem;">
-      当サイトでは、第三者配信の広告サービス（Googleアドセンス）を利用しています。<br>
-      広告配信事業者は、ユーザーの興味に応じた商品やサービスの広告を表示するため、Cookie（クッキー）を使用することがあります。
-    </p>
-
-    <h3 style="font-size: 14px; margin-bottom: 0.5rem; color: var(--color-text-primary);">3. 免責事項</h3>
-    <p>
-      当サイトを利用することで生じた損害やトラブルについて、運営者は一切の責任を負いかねます。自己責任の範囲でご利用ください。
-    </p>
   </section>
 </div>
 
@@ -615,7 +588,6 @@ $('ratioInput').addEventListener('input', ()=>{
 const menuBtn = $('menuBtn');
 const topMenu = $('topMenu');
 const termsModal = $('termsModal');
-const privacyModal = $('privacyModal');
 const contactModal = $('contactModal');
 
 function closeMenu(){
@@ -632,7 +604,6 @@ function closeModal(modalEl){
 }
 function openModal(modalEl){
   closeModal(termsModal);
-  closeModal(privacyModal);
   closeModal(contactModal);
   modalEl.classList.add('open');
   modalEl.setAttribute('aria-hidden', 'false');
@@ -648,22 +619,15 @@ $('openTermsBtn').onclick = ()=>{
   closeMenu();
   openModal(termsModal);
 };
-$('openPrivacyBtn').onclick = ()=>{
-  closeMenu();
-  openModal(privacyModal);
-};
+$('openPrivacyBtn').onclick = ()=>closeMenu();
 $('openContactBtn').onclick = ()=>{
   closeMenu();
   openModal(contactModal);
 };
 $('closeTermsBtn').onclick = ()=>closeModal(termsModal);
-$('closePrivacyBtn').onclick = ()=>closeModal(privacyModal);
 $('closeContactBtn').onclick = ()=>closeModal(contactModal);
 termsModal.addEventListener('click', e=>{
   if(e.target === termsModal) closeModal(termsModal);
-});
-privacyModal.addEventListener('click', e=>{
-  if(e.target === privacyModal) closeModal(privacyModal);
 });
 contactModal.addEventListener('click', e=>{
   if(e.target === contactModal) closeModal(contactModal);
@@ -677,7 +641,6 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape'){
     closeMenu();
     closeModal(termsModal);
-    closeModal(privacyModal);
     closeModal(contactModal);
   }
 });
@@ -686,8 +649,7 @@ $('jumpTermsLink').onclick = ()=>{
   openModal(termsModal);
 };
 $('jumpPrivacyLink').onclick = ()=>{
-  closeModal(contactModal);
-  openModal(privacyModal);
+  window.open('privacy.html', '_blank', 'noopener');
 };
 $('contactForm').addEventListener('submit', async e=>{
   e.preventDefault();
