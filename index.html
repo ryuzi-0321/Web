@@ -1,922 +1,934 @@
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --color-background-primary:#ffffff;
-  --color-background-secondary:#f3f5f9;
-  --color-text-primary:#1f2f48;
-  --color-text-secondary:#4e5d78;
-  --color-text-tertiary:#7b889f;
-  --color-border-secondary:#cfd7e6;
-  --color-border-tertiary:#dde4f0;
-  --border-radius-md:10px;
-  --border-radius-lg:14px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-text-primary,#1f2937)}
-.topbar{height:60px;background:#ffffff;border-bottom:1px solid #dde4f0;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;box-shadow:0 1px 0 rgba(0,0,0,.03)}
-.brand{display:flex;align-items:center;gap:.6rem;color:#18233a;font-weight:700;font-size:1.4rem;letter-spacing:.01em}
-.brand-mark{width:22px;height:22px;border-radius:6px;background:#4f8eed;display:inline-block;box-shadow:0 3px 8px rgba(79,142,237,.35)}
-.top-actions{display:flex;align-items:center;gap:.45rem}
-.top-dot{width:6px;height:6px;border-radius:50%;background:#9aa8bf;display:inline-block}
-.menu-btn{border:1px solid #d5ddea;background:#fff;border-radius:10px;padding:.4rem .5rem;display:flex;align-items:center;gap:.3rem;cursor:pointer}
-.menu-btn:hover{background:#f4f7fc}
-.menu-wrap{position:relative}
-.menu-panel{position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#fff;border:1px solid #d7deea;border-radius:10px;box-shadow:0 10px 24px rgba(19,34,62,.15);padding:.35rem;display:none;z-index:30}
-.menu-panel.open{display:block}
-.menu-item{width:100%;text-align:left;background:transparent;border:0;border-radius:8px;padding:.6rem .7rem;font-size:.9rem;color:#243551;cursor:pointer}
-.menu-item:hover{background:#eef4ff}
-.wrap{padding:2rem;max-width:760px;margin:1rem auto 1.75rem;font-family:'Noto Sans JP',var(--font-sans),sans-serif;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(34,58,107,.08)}
-.content-section{margin:1.5rem 0;line-height:1.9;color:var(--color-text-secondary,#3f4a5a)}
-.content-section h2{font-size:1.35rem;color:var(--color-text-primary,#152033);margin-bottom:.75rem}
-.content-section h3{font-size:1.02rem;color:var(--color-text-primary,#152033);margin:1rem 0 .45rem}
-.content-section p{font-size:.96rem}
-.content-section ul{margin-top:.5rem;padding-left:1.2rem}
-.content-section li{margin-bottom:.45rem}
-.hero-note{padding:1rem 1.1rem;border:1px solid #d8dfec;background:#f8faff;border-radius:12px}
-.guide-section{padding:1rem 1.1rem;border:1px solid #dbe2ee;background:#f8faff;border-radius:12px}
-.guide-list{display:grid;gap:.6rem;list-style:none;padding-left:0}
-.guide-list li{background:#fff;border:1px solid #e6ebf3;border-radius:10px;padding:.7rem .8rem}
-.guide-list strong{color:#133a6a}
-.tool-hero{margin:1.75rem 0 1.25rem;text-align:center}
-.tool-title{font-size:2rem;line-height:1.2;font-weight:700;color:#1f2f48;letter-spacing:.01em}
-.tool-sub{margin-top:.55rem;font-size:1.02rem;color:#3f4f6b}
-.ad-banner{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.875rem 1.25rem;text-align:center;font-size:13px;color:var(--color-text-tertiary);margin-bottom:1.5rem;background:var(--color-background-secondary)}
-.drop-zone{border:1.5px dashed #c5cedf;border-radius:var(--border-radius-lg);padding:2.4rem 1.2rem 2rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin:0 auto 1.25rem;background:#fff}
-.drop-zone:hover,.drop-zone.drag-over{border-color:#4f8eed;background:#ecf3ff}
-.drop-zone input{display:none}
-.drop-icon{font-size:30px;margin-bottom:.8rem}
-.drop-title{display:inline-block;min-width:260px;padding:1rem 2rem;border-radius:14px;background:#4f8eed;color:#fff;font-size:2rem;font-weight:700;line-height:1.15;box-shadow:0 8px 18px rgba(79,142,237,.28);margin-bottom:1rem}
-.drop-sub{font-size:1.05rem;color:#3f4f6b}
-.loader-row{display:none;align-items:center;gap:10px;padding:.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:1rem;font-size:13px;color:var(--color-text-secondary)}
-.spinner{width:16px;height:16px;border:2px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.controls{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;display:none}
-.ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:.75rem}
-.ctrl-row:last-child{margin-bottom:0}
-.ctrl-label{font-size:13px;color:var(--color-text-secondary);min-width:72px}
-.ctrl-row input[type=range]{flex:1}
-.ctrl-val{font-size:13px;font-weight:500;min-width:28px;text-align:right;color:var(--color-text-primary)}
-.ctrl-block{border-top:0.5px solid var(--color-border-tertiary);padding-top:.8rem;margin-top:.8rem}
-.ctrl-title{font-size:13px;font-weight:700;color:var(--color-text-primary);margin-bottom:.55rem}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .15s;user-select:none}
-.pill.active{background:#eaf2ff;color:#276fcd;border-color:#4f8eed}
-.resize-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-.resize-input-wrap{display:flex;flex-direction:column;gap:.35rem}
-.resize-input-wrap label{font-size:12px;color:var(--color-text-secondary)}
-.resize-input{width:100%;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.48rem .55rem;background:#fff;color:var(--color-text-primary)}
-.resize-check{display:flex;align-items:center;gap:.45rem;font-size:12px;line-height:1.45;color:var(--color-text-secondary);margin-top:.6rem;cursor:pointer}
-.resize-check input{width:14px;height:14px;flex:0 0 14px}
-.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
-.mode-tab{border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);border-radius:9px;padding:.45rem .55rem;font-size:12px;font-weight:700;cursor:pointer}
-.mode-tab.active{background:#eaf2ff;border-color:#4f8eed;color:#276fcd}
-.tab-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-right:.35rem;opacity:.95}
-.tab-icon-box{border:1.5px solid currentColor;border-radius:2px;position:relative}
-.tab-icon-box:before,.tab-icon-box:after{content:'';position:absolute;background:currentColor}
-.tab-icon-box:before{width:1.5px;height:8px;left:5px;top:1px}
-.tab-icon-box:after{width:8px;height:1.5px;left:1px;top:5px}
-.tab-icon-ratio{font-size:12px;font-weight:700}
-.ratio-row{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
-.ratio-input{width:92px;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.42rem .5rem;background:#fff;color:var(--color-text-primary)}
-.hidden{display:none !important}
-.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
-@media(max-width:520px){.preview-grid{grid-template-columns:1fr}}
-@media(max-width:520px){
-  .topbar{height:54px;padding:0 .75rem}
-  .brand{font-size:1.1rem}
-  .brand-mark{width:18px;height:18px}
-  .tool-title{font-size:1.55rem}
-  .drop-title{min-width:0;width:100%;font-size:1.5rem}
-  .drop-sub{font-size:.95rem}
-  .resize-grid{grid-template-columns:1fr}
-}
-.preview-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;display:none}
-.preview-card img{width:100%;display:block;max-height:200px;object-fit:contain;background:var(--color-background-secondary)}
-.preview-info{padding:.75rem 1rem;border-top:0.5px solid var(--color-border-tertiary)}
-.preview-label{font-size:11px;color:var(--color-text-tertiary);letter-spacing:.4px;margin-bottom:4px}
-.preview-name{font-size:13px;font-weight:500;color:var(--color-text-primary);word-break:break-all}
-.preview-meta{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
-.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;margin-left:4px;vertical-align:middle}
-.badge-heic{background:#EEEDFE;color:#3C3489}
-.badge-jpg{background:#EAF3DE;color:#27500A}
-.badge-png{background:#E1F5EE;color:#085041}
-.badge-webp{background:#FAEEDA;color:#633806}
-.badge-save{background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459}
-.status{font-size:13px;color:var(--color-text-secondary);text-align:center;margin:.5rem 0;min-height:18px}
-.status.err{color:#A32D2D}
-.status.ok{color:#3B6D11}
-.btn{width:100%;padding:.75rem;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;border:none;display:none}
-.btn-convert{background:#4f8eed;color:#fff;margin-bottom:.5rem;border-radius:12px;font-weight:700;box-shadow:0 6px 14px rgba(79,142,237,.25)}
-.btn-convert:hover{background:#3c7de0}
-.btn-convert:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:not-allowed}
-.btn-dl{background:#eef5ff;color:#2a6fc8;border:0.5px solid #6a9ee7}
-.btn-dl:hover{background:#dceaff}
-.wasm-status{font-size:12px;color:var(--color-text-tertiary);text-align:center;margin-bottom:.75rem}
-.wasm-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#EF9F27;margin-right:5px;vertical-align:middle}
-.wasm-dot.ready{background:#639922}
-.modal-backdrop{position:fixed;inset:0;background:rgba(14,20,32,.48);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
-.modal-backdrop.open{display:flex}
-.modal-card{width:min(720px,100%);max-height:86vh;overflow:auto;background:#fff;border:1px solid #d4dceb;border-radius:12px;padding:1.2rem}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
-.modal-title{font-size:1.05rem;font-weight:700;color:var(--color-text-primary)}
-.modal-close{border:1px solid #d2daea;background:#fff;border-radius:8px;padding:.3rem .55rem;cursor:pointer}
-.modal-close:hover{background:#f4f7fc}
-.policy-text{font-size:.94rem;line-height:1.85;color:var(--color-text-secondary)}
-.contact-lead{margin-bottom:1rem;font-size:.95rem;line-height:1.7;color:var(--color-text-secondary)}
-.contact-card{background:#f8f9fc;border:1px solid #e1e7f2;border-radius:12px;padding:1rem}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
-.contact-field{display:flex;flex-direction:column;gap:.35rem}
-.contact-field.full{grid-column:1 / -1}
-.contact-field label{font-size:.87rem;color:var(--color-text-primary);font-weight:700}
-.contact-field input,.contact-field select,.contact-field textarea{width:100%;border:1px solid #c9d2e3;border-radius:8px;padding:.62rem .7rem;background:#fff;color:var(--color-text-primary);font-size:.9rem}
-.contact-field textarea{resize:vertical;min-height:120px}
-.contact-consent{display:flex;align-items:flex-start;gap:.5rem;margin-top:.55rem;font-size:.86rem;color:var(--color-text-secondary)}
-.contact-consent a{color:#2f74d8}
-.contact-submit-wrap{display:flex;justify-content:flex-end;margin-top:.9rem}
-.contact-submit{border:0;background:#4f8eed;color:#fff;border-radius:10px;padding:.62rem 1rem;font-weight:700;cursor:pointer}
-.contact-submit:hover{background:#3b7de3}
-@media(max-width:720px){
-  .contact-grid{grid-template-columns:1fr}
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background-primary: #1a1a1a;
-    --color-background-secondary: #2d2d2d;
-    --color-text-primary: #f0f0f0;
-    --color-text-secondary: #ccc;
-    --color-border-secondary: #444;
-  }
-  body{background:#111827}
-  .topbar{background:#1b2330;border-color:#2e3b52}
-  .brand{color:#eef3ff}
-  .top-dot{background:#7f8ca3}
-  .menu-btn{background:#202b3a;border-color:#344661}
-  .menu-btn:hover{background:#2a3950}
-  .menu-panel{background:#1f2836;border-color:#32435e;box-shadow:0 10px 24px rgba(0,0,0,.4)}
-  .menu-item{color:#e8efff}
-  .menu-item:hover{background:#2c3a50}
-  .wrap{background:#1d222b;box-shadow:0 10px 24px rgba(0,0,0,.45)}
-  .hero-note{background:linear-gradient(135deg,#172334 0%,#1b2a40 100%);border-color:#2d425f}
-  .guide-section{background:#202733;border-color:#344154}
-  .guide-list li{background:#18202b;border-color:#2f3f58}
-  .drop-zone { background: #252525; }
-  .pill { background: #333; color: #bbb; }
-  .resize-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
-  .mode-tab{background:#243044;border-color:#3a4c67;color:#b9c7de}
-  .mode-tab.active{background:#29446f;border-color:#4f8eed;color:#eef5ff}
-  .ratio-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
-  .modal-card{background:#1d222b;border-color:#31405a}
-  .modal-close{background:#202a39;border-color:#394c69;color:#e8efff}
-  .modal-close:hover{background:#2a3950}
-  .contact-card{background:#222b38;border-color:#33455f}
-  .contact-field input,.contact-field select,.contact-field textarea{background:#1b2330;border-color:#3a4c67;color:#e8efff}
-  .contact-submit{background:#4b84df}
-  .contact-submit:hover{background:#3a74d0}
-}
-</style>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4465531654526233"
+    crossorigin="anonymous"></script>
 
-<header class="topbar">
-  <div class="brand"><span class="brand-mark"></span> HEIC Converter</div>
-  <div class="top-actions">
-    <div class="menu-wrap">
-      <button class="menu-btn" id="menuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="topMenu">
-        <span class="top-dot"></span>
-        <span class="top-dot"></span>
-        <span class="top-dot"></span>
-      </button>
-      <div class="menu-panel" id="topMenu" role="menu">
-        <button class="menu-item" id="openTermsBtn" role="menuitem">利用規約</button>
-        <a class="menu-item" id="openPrivacyBtn" role="menuitem" href="privacy.html" style="display:block;text-decoration:none;">プライバシーポリシー</a>
-        <button class="menu-item" id="openContactBtn" role="menuitem">お問い合わせ</button>
-      </div>
-    </div>
-  </div>
-</header>
-
-<div class="wrap">
-  <section class="content-section hero-note">
-    <h2>このサイトについて</h2>
-    <p>iPhoneで撮影した高効率なHEIC画像を、ブラウザだけで安全・高速にJPEGやPNGへ変換できるWebツールです。</p>
-    <h3>なぜこのツールが安全なのか？</h3>
-    <ul>
-      <li><strong>完全クライアントサイド処理</strong>: 画像データは一切サーバーに送信されません。あなたのスマホやPC内で完結するため、プライバシー漏洩の心配がありません。</li>
-      <li><strong>インストール不要</strong>: ブラウザだけで動作するため、面倒な設定は一切ありません。</li>
-    </ul>
-  </section>
-  <section class="tool-hero">
-    <h1 class="tool-title">画像をJPGに変換</h1>
-    <p class="tool-sub">HEIC / JPEG / PNG をオンラインで変換できます。</p>
-  </section>
-  
-  <div class="ad-banner">広告スペース（AdSense をここに貼る）</div>
-
-  <div class="wasm-status" id="wasmStatus">
-    <span class="wasm-dot" id="wasmDot"></span><span id="wasmLabel">HEIC Converterを読み込み中...</span>
-  </div>
-
-  <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept=".heic,.HEIC,.jpg,.jpeg,.png,image/heic,image/jpeg,image/png">
-    <div class="drop-icon">&#128247;</div>
-    <div class="drop-title">画像をドロップ または タップして選択</div>
-    <div class="drop-sub">HEIC / JPEG / PNG — WebP / JPEG / PNG 変換対応</div>
-  </div>
-
-  <div class="loader-row" id="loaderRow">
-    <div class="spinner"></div>
-    <span id="loaderMsg">処理中...</span>
-  </div>
-
-  <div class="controls" id="controls">
-    <div class="ctrl-row">
-      <span class="ctrl-label">出力形式</span>
-      <div class="pills" id="fmtPills"></div>
-    </div>
-    <div class="ctrl-row" id="qualityRow">
-      <span class="ctrl-label">品質</span>
-      <input type="range" id="quality" min="10" max="95" step="1" value="80">
-      <span class="ctrl-val" id="qualityVal">80</span>
-    </div>
-    <div class="ctrl-block">
-      <div class="ctrl-title">画像圧縮</div>
-      <div class="ctrl-row" style="margin-bottom:.5rem;">
-        <span class="ctrl-label">圧縮レベル</span>
-        <div class="pills" id="compressPills">
-          <span class="pill active" data-q="80">標準</span>
-          <span class="pill" data-q="65">強め</span>
-          <span class="pill" data-q="50">最大</span>
-        </div>
-      </div>
-    </div>
-    <div class="ctrl-block">
-      <div class="ctrl-title">サイズ変更オプション</div>
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="resizeModePixel" type="button"><span class="tab-icon tab-icon-box"></span>ピクセルで</button>
-        <button class="mode-tab" id="resizeModeRatio" type="button"><span class="tab-icon tab-icon-ratio">%</span>比率で</button>
-      </div>
-      <div id="pixelResizePanel">
-        <div class="resize-grid">
-          <div class="resize-input-wrap">
-            <label for="resizeWidth">幅 (px)</label>
-            <input class="resize-input" id="resizeWidth" type="number" min="1" step="1" placeholder="元画像の幅">
-          </div>
-          <div class="resize-input-wrap">
-            <label for="resizeHeight">高さ (px)</label>
-            <input class="resize-input" id="resizeHeight" type="number" min="1" step="1" placeholder="元画像の高さ">
-          </div>
-        </div>
-      </div>
-      <div id="ratioResizePanel" style="display:none">
-        <div class="ratio-row">
-          <div class="pills" id="ratioPills">
-            <span class="pill" data-ratio="25">25%</span>
-            <span class="pill" data-ratio="50">50%</span>
-            <span class="pill" data-ratio="75">75%</span>
-            <span class="pill active" data-ratio="100">100%</span>
-          </div>
-          <input class="ratio-input" id="ratioInput" type="number" min="1" max="400" step="1" value="100" aria-label="リサイズ比率（パーセント）">
-        </div>
-      </div>
-      <label class="resize-check" id="lockAspectRow">
-        <input type="checkbox" id="lockAspect" checked>
-        <span>横縦比を維持</span>
-      </label>
-      <label class="resize-check" id="preventUpscaleRow">
-        <input type="checkbox" id="preventUpscale" checked>
-        <span>縮小の場合は拡大しないでください</span>
-      </label>
-    </div>
-    <label class="resize-check" id="keepExifRow">
-      <input type="checkbox" id="keepExif" checked>
-      <span>EXIF情報（撮影日時など）を保持する</span>
-    </label>
-  </div>
-
-  <div class="preview-grid">
-    <div class="preview-card" id="cardBefore">
-      <img id="imgBefore" alt="元画像">
-      <div class="preview-info">
-        <div class="preview-label">変換前</div>
-        <div class="preview-name" id="nameBefore"></div>
-        <div class="preview-meta" id="metaBefore"></div>
-      </div>
-    </div>
-    <div class="preview-card" id="cardAfter">
-      <img id="imgAfter" alt="変換後">
-      <div class="preview-info">
-        <div class="preview-label">変換後</div>
-        <div class="preview-name" id="nameAfter"></div>
-        <div class="preview-meta" id="metaAfter"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="status" id="status"></div>
-  <button class="btn btn-convert" id="btnConvert">変換する</button>
-  <button class="btn btn-dl" id="btnDl">ダウンロード</button>
-
-  <div class="ad-banner" style="margin-top:1.5rem">広告スペース（AdSense をここに貼る）</div>
-</div>
-
-<div class="modal-backdrop" id="termsModal" aria-hidden="true">
-  <section class="modal-card content-section guide-section" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
-    <div class="modal-head">
-      <h2 class="modal-title" id="termsTitle">利用規約</h2>
-      <button class="modal-close" id="closeTermsBtn" aria-label="利用規約を閉じる">閉じる</button>
-    </div>
-    <div class="policy-text">
-      <p style="margin-bottom:.8rem;">本ツールをご利用いただく前に、以下の内容をご確認ください。ご利用をもって本規約に同意したものとみなします。</p>
-      <h3 style="font-size:14px;margin:.5rem 0;">1. 提供内容</h3>
-      <p style="margin-bottom:.8rem;">本サイトは、画像変換機能を無償で提供します。予告なく仕様変更・停止する場合があります。</p>
-      <h3 style="font-size:14px;margin:.5rem 0;">2. 禁止事項</h3>
-      <p style="margin-bottom:.8rem;">法令違反、公序良俗違反、第三者の権利侵害、またはサービス運営を妨げる行為を禁止します。</p>
-      <h3 style="font-size:14px;margin:.5rem 0;">3. 免責</h3>
-      <p>本サービスの利用により生じた損害について、運営者は責任を負いません。必要に応じてデータのバックアップを行ってください。</p>
-    </div>
-  </section>
-</div>
-
-<div class="modal-backdrop" id="contactModal" aria-hidden="true">
-  <section class="modal-card content-section guide-section" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
-    <div class="modal-head">
-      <h2 class="modal-title" id="contactTitle">お問い合わせ</h2>
-      <button class="modal-close" id="closeContactBtn" aria-label="お問い合わせを閉じる">閉じる</button>
-    </div>
-    <p class="contact-lead">問題を報告する、HEIC Converterに関する疑問を明確にする、またはもっと知りたい場合には、当社にお問い合わせください。</p>
-    <form class="contact-card" id="contactForm">
-      <div class="contact-grid">
-        <div class="contact-field">
-          <label for="contactName">名前*</label>
-          <input id="contactName" type="text" placeholder="名前" required>
-        </div>
-        <div class="contact-field">
-          <label for="contactEmail">あなたのメールアドレス*</label>
-          <input id="contactEmail" type="email" placeholder="あなたのメールアドレス" required>
-        </div>
-        <div class="contact-field full">
-          <label for="contactSubject">件名*</label>
-          <select id="contactSubject" required>
-            <option value="">件名を選択する...</option>
-            <option value="bug">不具合報告</option>
-            <option value="question">使い方の質問</option>
-            <option value="request">機能要望</option>
-            <option value="other">その他</option>
-          </select>
-        </div>
-        <div class="contact-field full">
-          <label for="contactMessage">メッセージ*</label>
-          <textarea id="contactMessage" placeholder="メッセージを書く" required></textarea>
-        </div>
-      </div>
-      <label class="contact-consent">
-        <input type="checkbox" id="contactConsent" required>
-        <span>私は <button type="button" id="jumpTermsLink" style="border:0;background:transparent;color:#2f74d8;cursor:pointer;text-decoration:underline;padding:0">利用規約</button> と <button type="button" id="jumpPrivacyLink" style="border:0;background:transparent;color:#2f74d8;cursor:pointer;text-decoration:underline;padding:0">法とプライバシー</button> に同意します</span>
-      </label>
-      <div class="contact-submit-wrap">
-        <button class="contact-submit" type="submit">メッセージを送信する</button>
-      </div>
-    </form>
-  </section>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.js"></script>
-<script>
-const $ = id => document.getElementById(id);
-let heifDecoder = null;
-let currentFile = null;
-let currentCanvas = null;
-let selectedFmt = 'jpeg';
-let resizeMode = 'pixel';
-let resizeWidth = 0;
-let resizeHeight = 0;
-let resizeRatio = 100;
-let originalWidth = 0;
-let originalHeight = 0;
-let outputBlob = null;
-
-function fmt(b){
-  if(b<1024)return b+'B';
-  if(b<1048576)return Math.round(b/1024)+'KB';
-  return (b/1048576).toFixed(1)+'MB';
-}
-
-function setLoader(show, msg=''){
-  $('loaderRow').style.display = show ? 'flex' : 'none';
-  if(msg) $('loaderMsg').textContent = msg;
-}
-
-function setStatus(msg, type=''){
-  const el = $('status');
-  el.textContent = msg;
-  el.className = 'status' + (type ? ' '+type : '');
-}
-
-/** npm パッケージ libheif-js に含まれるブラウザ用ファイル（dist/ は存在しないため 404 になる） */
-const LIBHEIF_SCRIPT_URLS = [
-  'https://cdn.jsdelivr.net/npm/libheif-js@1.17.1/libheif-wasm/libheif-bundle.js',
-  'https://unpkg.com/libheif-js@1.17.1/libheif-wasm/libheif-bundle.js',
-  'https://cdn.jsdelivr.net/npm/libheif-js@1.17.1/libheif-wasm/libheif.js',
-  'https://unpkg.com/libheif-js@1.17.1/libheif-wasm/libheif.js'
-];
-
-function loadScriptOnce(src){
-  return new Promise((resolve, reject)=>{
-    const existing = document.querySelector('script[data-libheif-loader="1"][src="'+src+'"]');
-    if(existing){
-      if(existing.dataset.loaded === '1'){ resolve(); return }
-      existing.addEventListener('load', ()=>resolve(), {once:true});
-      existing.addEventListener('error', ()=>reject(new Error(src)), {once:true});
-      return;
-    }
-    const s = document.createElement('script');
-    s.src = src;
-    s.async = true;
-    s.dataset.libheifLoader = '1';
-    s.onload = ()=>{ s.dataset.loaded = '1'; resolve(); };
-    s.onerror = ()=>reject(new Error('スクリプトの取得に失敗: '+src));
-    (document.head || document.documentElement).appendChild(s);
-  });
-}
-
-let libheifLoadInflight = null;
-async function ensureLibheifScript(){
-  if(typeof libheif !== 'undefined') return;
-  if(!libheifLoadInflight){
-    libheifLoadInflight = (async ()=>{
-      let lastErr = null;
-      for(const url of LIBHEIF_SCRIPT_URLS){
-        try{
-          $('wasmLabel').textContent = 'libheif を読み込み中（初回は数秒かかることがあります）...';
-          await loadScriptOnce(url);
-          if(typeof libheif !== 'undefined') return;
-        }catch(e){ lastErr = e; }
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+      :root{
+        --color-background-primary:#ffffff;
+        --color-background-secondary:#f3f5f9;
+        --color-text-primary:#1f2f48;
+        --color-text-secondary:#4e5d78;
+        --color-text-tertiary:#7b889f;
+        --color-border-secondary:#cfd7e6;
+        --color-border-tertiary:#dde4f0;
+        --border-radius-md:10px;
+        --border-radius-lg:14px;
       }
-      throw lastErr || new Error('libheif スクリプトをどの CDN からも読み込めませんでした');
-    })().finally(()=>{ libheifLoadInflight = null; });
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Noto Sans JP',sans-serif;background:#eef0f5;color:var(--color-text-primary,#1f2937)}
+      .topbar{height:60px;background:#ffffff;border-bottom:1px solid #dde4f0;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+      .brand{display:flex;align-items:center;gap:.6rem;color:#18233a;font-weight:700;font-size:1.4rem;letter-spacing:.01em}
+      .brand-mark{width:22px;height:22px;border-radius:6px;background:#4f8eed;display:inline-block;box-shadow:0 3px 8px rgba(79,142,237,.35)}
+      .top-actions{display:flex;align-items:center;gap:.45rem}
+      .top-dot{width:6px;height:6px;border-radius:50%;background:#9aa8bf;display:inline-block}
+      .menu-btn{border:1px solid #d5ddea;background:#fff;border-radius:10px;padding:.4rem .5rem;display:flex;align-items:center;gap:.3rem;cursor:pointer}
+      .menu-btn:hover{background:#f4f7fc}
+      .menu-wrap{position:relative}
+      .menu-panel{position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#fff;border:1px solid #d7deea;border-radius:10px;box-shadow:0 10px 24px rgba(19,34,62,.15);padding:.35rem;display:none;z-index:30}
+      .menu-panel.open{display:block}
+      .menu-item{width:100%;text-align:left;background:transparent;border:0;border-radius:8px;padding:.6rem .7rem;font-size:.9rem;color:#243551;cursor:pointer}
+      .menu-item:hover{background:#eef4ff}
+      .wrap{padding:2rem;max-width:760px;margin:1rem auto 1.75rem;font-family:'Noto Sans JP',var(--font-sans),sans-serif;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(34,58,107,.08)}
+      .content-section{margin:1.5rem 0;line-height:1.9;color:var(--color-text-secondary,#3f4a5a)}
+      .content-section h2{font-size:1.35rem;color:var(--color-text-primary,#152033);margin-bottom:.75rem}
+      .content-section h3{font-size:1.02rem;color:var(--color-text-primary,#152033);margin:1rem 0 .45rem}
+      .content-section p{font-size:.96rem}
+      .content-section ul{margin-top:.5rem;padding-left:1.2rem}
+      .content-section li{margin-bottom:.45rem}
+      .hero-note{padding:1rem 1.1rem;border:1px solid #d8dfec;background:#f8faff;border-radius:12px}
+      .guide-section{padding:1rem 1.1rem;border:1px solid #dbe2ee;background:#f8faff;border-radius:12px}
+      .guide-list{display:grid;gap:.6rem;list-style:none;padding-left:0}
+      .guide-list li{background:#fff;border:1px solid #e6ebf3;border-radius:10px;padding:.7rem .8rem}
+      .guide-list strong{color:#133a6a}
+      .tool-hero{margin:1.75rem 0 1.25rem;text-align:center}
+      .tool-title{font-size:2rem;line-height:1.2;font-weight:700;color:#1f2f48;letter-spacing:.01em}
+      .tool-sub{margin-top:.55rem;font-size:1.02rem;color:#3f4f6b}
+      .ad-banner{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.875rem 1.25rem;text-align:center;font-size:13px;color:var(--color-text-tertiary);margin-bottom:1.5rem;background:var(--color-background-secondary)}
+      .drop-zone{border:1.5px dashed #c5cedf;border-radius:var(--border-radius-lg);padding:2.4rem 1.2rem 2rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin:0 auto 1.25rem;background:#fff}
+      .drop-zone:hover,.drop-zone.drag-over{border-color:#4f8eed;background:#ecf3ff}
+      .drop-zone input{display:none}
+      .drop-icon{font-size:30px;margin-bottom:.8rem}
+      .drop-title{display:inline-block;min-width:260px;padding:1rem 2rem;border-radius:14px;background:#4f8eed;color:#fff;font-size:2rem;font-weight:700;line-height:1.15;box-shadow:0 8px 18px rgba(79,142,237,.28);margin-bottom:1rem}
+      .drop-sub{font-size:1.05rem;color:#3f4f6b}
+      .loader-row{display:none;align-items:center;gap:10px;padding:.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:1rem;font-size:13px;color:var(--color-text-secondary)}
+      .spinner{width:16px;height:16px;border:2px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+      @keyframes spin{to{transform:rotate(360deg)}}
+      .controls{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;display:none}
+      .ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:.75rem}
+      .ctrl-row:last-child{margin-bottom:0}
+      .ctrl-label{font-size:13px;color:var(--color-text-secondary);min-width:72px}
+      .ctrl-row input[type=range]{flex:1}
+      .ctrl-val{font-size:13px;font-weight:500;min-width:28px;text-align:right;color:var(--color-text-primary)}
+      .ctrl-block{border-top:0.5px solid var(--color-border-tertiary);padding-top:.8rem;margin-top:.8rem}
+      .ctrl-title{font-size:13px;font-weight:700;color:var(--color-text-primary);margin-bottom:.55rem}
+      .pills{display:flex;gap:8px;flex-wrap:wrap}
+      .pill{font-size:12px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .15s;user-select:none}
+      .pill.active{background:#eaf2ff;color:#276fcd;border-color:#4f8eed}
+      .resize-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+      .resize-input-wrap{display:flex;flex-direction:column;gap:.35rem}
+      .resize-input-wrap label{font-size:12px;color:var(--color-text-secondary)}
+      .resize-input{width:100%;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.48rem .55rem;background:#fff;color:var(--color-text-primary)}
+      .resize-check{display:flex;align-items:center;gap:.45rem;font-size:12px;line-height:1.45;color:var(--color-text-secondary);margin-top:.6rem;cursor:pointer}
+      .resize-check input{width:14px;height:14px;flex:0 0 14px}
+      .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+      .mode-tab{border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);border-radius:9px;padding:.45rem .55rem;font-size:12px;font-weight:700;cursor:pointer}
+      .mode-tab.active{background:#eaf2ff;border-color:#4f8eed;color:#276fcd}
+      .tab-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-right:.35rem;opacity:.95}
+      .tab-icon-box{border:1.5px solid currentColor;border-radius:2px;position:relative}
+      .tab-icon-box:before,.tab-icon-box:after{content:'';position:absolute;background:currentColor}
+      .tab-icon-box:before{width:1.5px;height:8px;left:5px;top:1px}
+      .tab-icon-box:after{width:8px;height:1.5px;left:1px;top:5px}
+      .tab-icon-ratio{font-size:12px;font-weight:700}
+      .ratio-row{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+      .ratio-input{width:92px;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.42rem .5rem;background:#fff;color:var(--color-text-primary)}
+      .hidden{display:none !important}
+      .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+      @media(max-width:520px){.preview-grid{grid-template-columns:1fr}}
+      @media(max-width:520px){
+        .topbar{height:54px;padding:0 .75rem}
+        .brand{font-size:1.1rem}
+        .brand-mark{width:18px;height:18px}
+        .tool-title{font-size:1.55rem}
+        .drop-title{min-width:0;width:100%;font-size:1.5rem}
+        .drop-sub{font-size:.95rem}
+        .resize-grid{grid-template-columns:1fr}
+      }
+      .preview-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;display:none}
+      .preview-card img{width:100%;display:block;max-height:200px;object-fit:contain;background:var(--color-background-secondary)}
+      .preview-info{padding:.75rem 1rem;border-top:0.5px solid var(--color-border-tertiary)}
+      .preview-label{font-size:11px;color:var(--color-text-tertiary);letter-spacing:.4px;margin-bottom:4px}
+      .preview-name{font-size:13px;font-weight:500;color:var(--color-text-primary);word-break:break-all}
+      .preview-meta{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+      .badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;margin-left:4px;vertical-align:middle}
+      .badge-heic{background:#EEEDFE;color:#3C3489}
+      .badge-jpg{background:#EAF3DE;color:#27500A}
+      .badge-png{background:#E1F5EE;color:#085041}
+      .badge-webp{background:#FAEEDA;color:#633806}
+      .badge-save{background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459}
+      .status{font-size:13px;color:var(--color-text-secondary);text-align:center;margin:.5rem 0;min-height:18px}
+      .status.err{color:#A32D2D}
+      .status.ok{color:#3B6D11}
+      .btn{width:100%;padding:.75rem;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;border:none;display:none}
+      .btn-convert{background:#4f8eed;color:#fff;margin-bottom:.5rem;border-radius:12px;font-weight:700;box-shadow:0 6px 14px rgba(79,142,237,.25)}
+      .btn-convert:hover{background:#3c7de0}
+      .btn-convert:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:not-allowed}
+      .btn-dl{background:#eef5ff;color:#2a6fc8;border:0.5px solid #6a9ee7}
+      .btn-dl:hover{background:#dceaff}
+      .wasm-status{font-size:12px;color:var(--color-text-tertiary);text-align:center;margin-bottom:.75rem}
+      .wasm-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#EF9F27;margin-right:5px;vertical-align:middle}
+      .wasm-dot.ready{background:#639922}
+      .modal-backdrop{position:fixed;inset:0;background:rgba(14,20,32,.48);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
+      .modal-backdrop.open{display:flex}
+      .modal-card{width:min(720px,100%);max-height:86vh;overflow:auto;background:#fff;border:1px solid #d4dceb;border-radius:12px;padding:1.2rem}
+      .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+      .modal-title{font-size:1.05rem;font-weight:700;color:var(--color-text-primary)}
+      .modal-close{border:1px solid #d2daea;background:#fff;border-radius:8px;padding:.3rem .55rem;cursor:pointer}
+      .modal-close:hover{background:#f4f7fc}
+      .policy-text{font-size:.94rem;line-height:1.85;color:var(--color-text-secondary)}
+      .contact-lead{margin-bottom:1rem;font-size:.95rem;line-height:1.7;color:var(--color-text-secondary)}
+      .contact-card{background:#f8f9fc;border:1px solid #e1e7f2;border-radius:12px;padding:1rem}
+      .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+      .contact-field{display:flex;flex-direction:column;gap:.35rem}
+      .contact-field.full{grid-column:1 / -1}
+      .contact-field label{font-size:.87rem;color:var(--color-text-primary);font-weight:700}
+      .contact-field input,.contact-field select,.contact-field textarea{width:100%;border:1px solid #c9d2e3;border-radius:8px;padding:.62rem .7rem;background:#fff;color:var(--color-text-primary);font-size:.9rem}
+      .contact-field textarea{resize:vertical;min-height:120px}
+      .contact-consent{display:flex;align-items:flex-start;gap:.5rem;margin-top:.55rem;font-size:.86rem;color:var(--color-text-secondary)}
+      .contact-consent a{color:#2f74d8}
+      .contact-submit-wrap{display:flex;justify-content:flex-end;margin-top:.9rem}
+      .contact-submit{border:0;background:#4f8eed;color:#fff;border-radius:10px;padding:.62rem 1rem;font-weight:700;cursor:pointer}
+      .contact-submit:hover{background:#3b7de3}
+      @media(max-width:720px){
+        .contact-grid{grid-template-columns:1fr}
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-background-primary: #1a1a1a;
+          --color-background-secondary: #2d2d2d;
+          --color-text-primary: #f0f0f0;
+          --color-text-secondary: #ccc;
+          --color-border-secondary: #444;
+        }
+        body{background:#111827}
+        .topbar{background:#1b2330;border-color:#2e3b52}
+        .brand{color:#eef3ff}
+        .top-dot{background:#7f8ca3}
+        .menu-btn{background:#202b3a;border-color:#344661}
+        .menu-btn:hover{background:#2a3950}
+        .menu-panel{background:#1f2836;border-color:#32435e;box-shadow:0 10px 24px rgba(0,0,0,.4)}
+        .menu-item{color:#e8efff}
+        .menu-item:hover{background:#2c3a50}
+        .wrap{background:#1d222b;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+        .hero-note{background:linear-gradient(135deg,#172334 0%,#1b2a40 100%);border-color:#2d425f}
+        .guide-section{background:#202733;border-color:#344154}
+        .guide-list li{background:#18202b;border-color:#2f3f58}
+        .drop-zone { background: #252525; }
+        .pill { background: #333; color: #bbb; }
+        .resize-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
+        .mode-tab{background:#243044;border-color:#3a4c67;color:#b9c7de}
+        .mode-tab.active{background:#29446f;border-color:#4f8eed;color:#eef5ff}
+        .ratio-input{background:#1b2330;border-color:#3a4c67;color:#e8efff}
+        .modal-card{background:#1d222b;border-color:#31405a}
+        .modal-close{background:#202a39;border-color:#394c69;color:#e8efff}
+        .modal-close:hover{background:#2a3950}
+        .contact-card{background:#222b38;border-color:#33455f}
+        .contact-field input,.contact-field select,.contact-field textarea{background:#1b2330;border-color:#3a4c67;color:#e8efff}
+        .contact-submit{background:#4b84df}
+        .contact-submit:hover{background:#3a74d0}
+      }
+    </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span> HEIC Converter</div>
+    <div class="top-actions">
+      <div class="menu-wrap">
+        <button class="menu-btn" id="menuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="topMenu">
+          <span class="top-dot"></span>
+          <span class="top-dot"></span>
+          <span class="top-dot"></span>
+        </button>
+        <div class="menu-panel" id="topMenu" role="menu">
+          <button class="menu-item" id="openTermsBtn" role="menuitem">利用規約</button>
+          <a class="menu-item" id="openPrivacyBtn" role="menuitem" href="privacy.html" style="display:block;text-decoration:none;">プライバシーポリシー</a>
+          <button class="menu-item" id="openContactBtn" role="menuitem">お問い合わせ</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="content-section hero-note">
+      <h2>このサイトについて</h2>
+      <p>iPhoneで撮影した高効率なHEIC画像を、ブラウザだけで安全・高速にJPEGやPNGへ変換できるWebツールです。</p>
+      <h3>なぜこのツールが安全なのか？</h3>
+      <ul>
+        <li><strong>完全クライアントサイド処理</strong>: 画像データは一切サーバーに送信されません。あなたのスマホやPC内で完結するため、プライバシー漏洩の心配がありません。</li>
+        <li><strong>インストール不要</strong>: ブラウザだけで動作するため、面倒な設定は一切ありません。</li>
+      </ul>
+    </section>
+    <section class="tool-hero">
+      <h1 class="tool-title">画像をJPGに変換</h1>
+      <p class="tool-sub">HEIC / JPEG / PNG をオンラインで変換できます。</p>
+    </section>
+    
+    <div class="ad-banner">広告スペース（AdSense をここに貼る）</div>
+
+    <div class="wasm-status" id="wasmStatus">
+      <span class="wasm-dot" id="wasmDot"></span><span id="wasmLabel">HEIC Converterを読み込み中...</span>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".heic,.HEIC,.jpg,.jpeg,.png,image/heic,image/jpeg,image/png">
+      <div class="drop-icon">&#128247;</div>
+      <div class="drop-title">画像をドロップ または タップして選択</div>
+      <div class="drop-sub">HEIC / JPEG / PNG — WebP / JPEG / PNG 変換対応</div>
+    </div>
+
+    <div class="loader-row" id="loaderRow">
+      <div class="spinner"></div>
+      <span id="loaderMsg">処理中...</span>
+    </div>
+
+    <div class="controls" id="controls">
+      <div class="ctrl-row">
+        <span class="ctrl-label">出力形式</span>
+        <div class="pills" id="fmtPills"></div>
+      </div>
+      <div class="ctrl-row" id="qualityRow">
+        <span class="ctrl-label">品質</span>
+        <input type="range" id="quality" min="10" max="95" step="1" value="80">
+        <span class="ctrl-val" id="qualityVal">80</span>
+      </div>
+      <div class="ctrl-block">
+        <div class="ctrl-title">画像圧縮</div>
+        <div class="ctrl-row" style="margin-bottom:.5rem;">
+          <span class="ctrl-label">圧縮レベル</span>
+          <div class="pills" id="compressPills">
+            <span class="pill active" data-q="80">標準</span>
+            <span class="pill" data-q="65">強め</span>
+            <span class="pill" data-q="50">最大</span>
+          </div>
+        </div>
+      </div>
+      <div class="ctrl-block">
+        <div class="ctrl-title">サイズ変更オプション</div>
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="resizeModePixel" type="button"><span class="tab-icon tab-icon-box"></span>ピクセルで</button>
+          <button class="mode-tab" id="resizeModeRatio" type="button"><span class="tab-icon tab-icon-ratio">%</span>比率で</button>
+        </div>
+        <div id="pixelResizePanel">
+          <div class="resize-grid">
+            <div class="resize-input-wrap">
+              <label for="resizeWidth">幅 (px)</label>
+              <input class="resize-input" id="resizeWidth" type="number" min="1" step="1" placeholder="元画像の幅">
+            </div>
+            <div class="resize-input-wrap">
+              <label for="resizeHeight">高さ (px)</label>
+              <input class="resize-input" id="resizeHeight" type="number" min="1" step="1" placeholder="元画像の高さ">
+            </div>
+          </div>
+        </div>
+        <div id="ratioResizePanel" style="display:none">
+          <div class="ratio-row">
+            <div class="pills" id="ratioPills">
+              <span class="pill" data-ratio="25">25%</span>
+              <span class="pill" data-ratio="50">50%</span>
+              <span class="pill" data-ratio="75">75%</span>
+              <span class="pill active" data-ratio="100">100%</span>
+            </div>
+            <input class="ratio-input" id="ratioInput" type="number" min="1" max="400" step="1" value="100" aria-label="リサイズ比率（パーセント）">
+          </div>
+        </div>
+        <label class="resize-check" id="lockAspectRow">
+          <input type="checkbox" id="lockAspect" checked>
+          <span>横縦比を維持</span>
+        </label>
+        <label class="resize-check" id="preventUpscaleRow">
+          <input type="checkbox" id="preventUpscale" checked>
+          <span>縮小の場合は拡大しないでください</span>
+        </label>
+      </div>
+      <label class="resize-check" id="keepExifRow">
+        <input type="checkbox" id="keepExif" checked>
+        <span>EXIF情報（撮影日時など）を保持する</span>
+      </label>
+    </div>
+
+    <div class="preview-grid">
+      <div class="preview-card" id="cardBefore">
+        <img id="imgBefore" alt="元画像">
+        <div class="preview-info">
+          <div class="preview-label">変換前</div>
+          <div class="preview-name" id="nameBefore"></div>
+          <div class="preview-meta" id="metaBefore"></div>
+        </div>
+      </div>
+      <div class="preview-card" id="cardAfter">
+        <img id="imgAfter" alt="変換後">
+        <div class="preview-info">
+          <div class="preview-label">変換後</div>
+          <div class="preview-name" id="nameAfter"></div>
+          <div class="preview-meta" id="metaAfter"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+    <button class="btn btn-convert" id="btnConvert">変換する</button>
+    <button class="btn btn-dl" id="btnDl">ダウンロード</button>
+
+    <div class="ad-banner" style="margin-top:1.5rem">広告スペース（AdSense をここに貼る）</div>
+  </div>
+
+  <div class="modal-backdrop" id="termsModal" aria-hidden="true">
+    <section class="modal-card content-section guide-section" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="termsTitle">利用規約</h2>
+        <button class="modal-close" id="closeTermsBtn" aria-label="利用規約を閉じる">閉じる</button>
+      </div>
+      <div class="policy-text">
+        <p style="margin-bottom:.8rem;">本ツールをご利用いただく前に、以下の内容をご確認ください。ご利用をもって本規約に同意したものとみなします。</p>
+        <h3 style="font-size:14px;margin:.5rem 0;">1. 提供内容</h3>
+        <p style="margin-bottom:.8rem;">本サイトは、画像変換機能を無償で提供します。予告なく仕様変更・停止する場合があります。</p>
+        <h3 style="font-size:14px;margin:.5rem 0;">2. 禁止事項</h3>
+        <p style="margin-bottom:.8rem;">法令違反、公序良俗違反、第三者の権利侵害、またはサービス運営を妨げる行為を禁止します。</p>
+        <h3 style="font-size:14px;margin:.5rem 0;">3. 免責</h3>
+        <p>本サービスの利用により生じた損害について、運営者は責任を負いません。必要に応じてデータのバックアップを行ってください。</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="contactModal" aria-hidden="true">
+    <section class="modal-card content-section guide-section" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+      <div class="modal-head">
+        <h2 class="modal-title" id="contactTitle">お問い合わせ</h2>
+        <button class="modal-close" id="closeContactBtn" aria-label="お問い合わせを閉じる">閉じる</button>
+      </div>
+      <p class="contact-lead">問題を報告する、HEIC Converterに関する疑問を明確にする、またはもっと知りたい場合には、当社にお問い合わせください。</p>
+      <form class="contact-card" id="contactForm">
+        <div class="contact-grid">
+          <div class="contact-field">
+            <label for="contactName">名前*</label>
+            <input id="contactName" type="text" placeholder="名前" required>
+          </div>
+          <div class="contact-field">
+            <label for="contactEmail">あなたのメールアドレス*</label>
+            <input id="contactEmail" type="email" placeholder="あなたのメールアドレス" required>
+          </div>
+          <div class="contact-field full">
+            <label for="contactSubject">件名*</label>
+            <select id="contactSubject" required>
+              <option value="">件名を選択する...</option>
+              <option value="bug">不具合報告</option>
+              <option value="question">使い方の質問</option>
+              <option value="request">機能要望</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+          <div class="contact-field full">
+            <label for="contactMessage">メッセージ*</label>
+            <textarea id="contactMessage" placeholder="メッセージを書く" required></textarea>
+          </div>
+        </div>
+        <label class="contact-consent">
+          <input type="checkbox" id="contactConsent" required>
+          <span>私は <button type="button" id="jumpTermsLink" style="border:0;background:transparent;color:#2f74d8;cursor:pointer;text-decoration:underline;padding:0">利用規約</button> と <button type="button" id="jumpPrivacyLink" style="border:0;background:transparent;color:#2f74d8;cursor:pointer;text-decoration:underline;padding:0">法とプライバシー</button> に同意します</span>
+        </label>
+        <div class="contact-submit-wrap">
+          <button class="contact-submit" type="submit">メッセージを送信する</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.js"></script>
+  <script>
+  const $ = id => document.getElementById(id);
+  let heifDecoder = null;
+  let currentFile = null;
+  let currentCanvas = null;
+  let selectedFmt = 'jpeg';
+  let resizeMode = 'pixel';
+  let resizeWidth = 0;
+  let resizeHeight = 0;
+  let resizeRatio = 100;
+  let originalWidth = 0;
+  let originalHeight = 0;
+  let outputBlob = null;
+
+  function fmt(b){
+    if(b<1024)return b+'B';
+    if(b<1048576)return Math.round(b/1024)+'KB';
+    return (b/1048576).toFixed(1)+'MB';
   }
-  await libheifLoadInflight;
-  if(typeof libheif === 'undefined'){
-    throw new Error('libheif が定義されませんでした（スクリプトは読み込めたが API が見つかりません）');
-  }
-}
 
-async function initLibheif(){
-  try{
-    await ensureLibheifScript();
-    const lib = await libheif();
-    heifDecoder = new lib.HeifDecoder();
-    $('wasmDot').className = 'wasm-dot ready';
-    $('wasmLabel').textContent = 'HEIC Converter準備完了（Chrome・Safari 対応）';
-  }catch(e){
-    $('wasmDot').className = 'wasm-dot';
-    $('wasmLabel').textContent = 'HEIC Converter初期化エラー: '+e.message;
-  }
-}
-initLibheif();
-
-const fmtOptions = {
-  heic: [{v:'jpeg',l:'JPEG'},{v:'png',l:'PNG'},{v:'webp',l:'WebP'}],
-  jpeg: [{v:'jpeg',l:'JPEG（圧縮）'},{v:'png',l:'PNG'},{v:'webp',l:'WebP'}],
-  png:  [{v:'webp',l:'WebP'},{v:'jpeg',l:'JPEG'},{v:'png',l:'PNG（最適化）'}]
-};
-
-function buildFmtPills(fmt, def){
-  const container = $('fmtPills');
-  container.innerHTML = '';
-  selectedFmt = def;
-  fmt.forEach(f=>{
-    const p = document.createElement('span');
-    p.className = 'pill' + (f.v===def?' active':'');
-    p.textContent = f.l;
-    p.onclick = ()=>{
-      container.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-      p.classList.add('active');
-      selectedFmt = f.v;
-      $('qualityRow').style.display = f.v==='png'?'none':'flex';
-    };
-    container.appendChild(p);
-  });
-  $('qualityRow').style.display = def==='png'?'none':'flex';
-}
-
-$('quality').oninput = () => $('qualityVal').textContent = $('quality').value;
-$('compressPills').querySelectorAll('.pill').forEach(p=>{
-  p.onclick=()=>{
-    $('compressPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-    p.classList.add('active');
-    $('quality').value = p.dataset.q;
-    $('qualityVal').textContent = p.dataset.q;
-  };
-});
-
-function fillResizeInputs(w, h){
-  originalWidth = w;
-  originalHeight = h;
-  resizeWidth = w;
-  resizeHeight = h;
-  resizeRatio = 100;
-  $('resizeWidth').value = w;
-  $('resizeHeight').value = h;
-  $('ratioInput').value = 100;
-  $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-  const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
-  if(defaultRatioPill) defaultRatioPill.classList.add('active');
-}
-
-$('resizeWidth').addEventListener('input', ()=>{
-  const w = parseInt($('resizeWidth').value, 10);
-  if(!w || w < 1){ resizeWidth = 0; return; }
-  resizeWidth = w;
-  if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
-    const h = Math.max(1, Math.round((w / originalWidth) * originalHeight));
-    resizeHeight = h;
-    $('resizeHeight').value = h;
-  }
-});
-$('resizeHeight').addEventListener('input', ()=>{
-  const h = parseInt($('resizeHeight').value, 10);
-  if(!h || h < 1){ resizeHeight = 0; return; }
-  resizeHeight = h;
-  if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
-    const w = Math.max(1, Math.round((h / originalHeight) * originalWidth));
-    resizeWidth = w;
-    $('resizeWidth').value = w;
-  }
-});
-function setResizeMode(mode){
-  resizeMode = mode;
-  const isPixel = mode === 'pixel';
-  $('resizeModePixel').classList.toggle('active', isPixel);
-  $('resizeModeRatio').classList.toggle('active', !isPixel);
-  $('pixelResizePanel').style.display = isPixel ? 'block' : 'none';
-  $('ratioResizePanel').style.display = isPixel ? 'none' : 'block';
-  // 比率モードでは縦横比固定のため、関連チェックは非表示にする
-  $('lockAspectRow').classList.toggle('hidden', !isPixel);
-  $('preventUpscaleRow').classList.toggle('hidden', !isPixel);
-  if(!isPixel){
-    // 比率モードでは上限を100%にして拡大を防止
-    if((parseInt($('ratioInput').value, 10) || 100) > 100){
-      $('ratioInput').value = 100;
-      resizeRatio = 100;
-      $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-      const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
-      if(defaultRatioPill) defaultRatioPill.classList.add('active');
-    }
-  }
-}
-$('resizeModePixel').onclick = ()=>setResizeMode('pixel');
-$('resizeModeRatio').onclick = ()=>setResizeMode('ratio');
-$('ratioPills').querySelectorAll('.pill').forEach(p=>{
-  p.onclick = ()=>{
-    $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-    p.classList.add('active');
-    const val = parseInt(p.dataset.ratio, 10);
-    resizeRatio = val;
-    $('ratioInput').value = val;
-  };
-});
-$('ratioInput').addEventListener('input', ()=>{
-  const val = parseInt($('ratioInput').value, 10);
-  if(!val || val < 1){ resizeRatio = 0; return; }
-  const max = resizeMode === 'ratio' ? 100 : 400;
-  resizeRatio = Math.min(max, val);
-  $('ratioInput').value = resizeRatio;
-  $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-  const matched = $('ratioPills').querySelector('[data-ratio="'+resizeRatio+'"]');
-  if(matched) matched.classList.add('active');
-});
-
-const menuBtn = $('menuBtn');
-const topMenu = $('topMenu');
-const termsModal = $('termsModal');
-const contactModal = $('contactModal');
-
-function closeMenu(){
-  topMenu.classList.remove('open');
-  menuBtn.setAttribute('aria-expanded', 'false');
-}
-function openMenu(){
-  topMenu.classList.add('open');
-  menuBtn.setAttribute('aria-expanded', 'true');
-}
-function closeModal(modalEl){
-  modalEl.classList.remove('open');
-  modalEl.setAttribute('aria-hidden', 'true');
-}
-function openModal(modalEl){
-  closeModal(termsModal);
-  closeModal(contactModal);
-  modalEl.classList.add('open');
-  modalEl.setAttribute('aria-hidden', 'false');
-}
-
-menuBtn.onclick = e=>{
-  e.stopPropagation();
-  const isOpen = topMenu.classList.contains('open');
-  if(isOpen) closeMenu();
-  else openMenu();
-};
-$('openTermsBtn').onclick = ()=>{
-  closeMenu();
-  openModal(termsModal);
-};
-$('openPrivacyBtn').onclick = ()=>closeMenu();
-$('openContactBtn').onclick = ()=>{
-  closeMenu();
-  openModal(contactModal);
-};
-$('closeTermsBtn').onclick = ()=>closeModal(termsModal);
-$('closeContactBtn').onclick = ()=>closeModal(contactModal);
-termsModal.addEventListener('click', e=>{
-  if(e.target === termsModal) closeModal(termsModal);
-});
-contactModal.addEventListener('click', e=>{
-  if(e.target === contactModal) closeModal(contactModal);
-});
-document.addEventListener('click', e=>{
-  if(!topMenu.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)){
-    closeMenu();
-  }
-});
-document.addEventListener('keydown', e=>{
-  if(e.key === 'Escape'){
-    closeMenu();
-    closeModal(termsModal);
-    closeModal(contactModal);
-  }
-});
-$('jumpTermsLink').onclick = ()=>{
-  closeModal(contactModal);
-  openModal(termsModal);
-};
-$('jumpPrivacyLink').onclick = ()=>{
-  window.open('privacy.html', '_blank', 'noopener');
-};
-$('contactForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const name = $('contactName').value.trim();
-  const email = $('contactEmail').value.trim();
-  const subjectKey = $('contactSubject').value;
-  const message = $('contactMessage').value.trim();
-  const consent = $('contactConsent').checked;
-
-  if(!name || !email || !subjectKey || !message){
-    alert('必須項目をすべて入力してください。');
-    return;
-  }
-  if(!consent){
-    alert('利用規約とプライバシーポリシーへの同意が必要です。');
-    return;
+  function setLoader(show, msg=''){
+    $('loaderRow').style.display = show ? 'flex' : 'none';
+    if(msg) $('loaderMsg').textContent = msg;
   }
 
-  const subjectMap = {
-    bug: '不具合報告',
-    question: '使い方の質問',
-    request: '機能要望',
-    other: 'その他'
-  };
-  const subjectLabel = subjectMap[subjectKey] || 'お問い合わせ';
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-  const prevLabel = submitBtn ? submitBtn.textContent : '';
+  function setStatus(msg, type=''){
+    const el = $('status');
+    el.textContent = msg;
+    el.className = 'status' + (type ? ' '+type : '');
+  }
 
-  try{
-    if(submitBtn){
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送信中...';
-    }
+  /** npm パッケージ libheif-js に含まれるブラウザ用ファイル（dist/ は存在しないため 404 になる） */
+  const LIBHEIF_SCRIPT_URLS = [
+    'https://cdn.jsdelivr.net/npm/libheif-js@1.17.1/libheif-wasm/libheif-bundle.js',
+    'https://unpkg.com/libheif-js@1.17.1/libheif-wasm/libheif-bundle.js',
+    'https://cdn.jsdelivr.net/npm/libheif-js@1.17.1/libheif-wasm/libheif.js',
+    'https://unpkg.com/libheif-js@1.17.1/libheif-wasm/libheif.js'
+  ];
 
-    const payload = new FormData();
-    payload.append('name', name);
-    payload.append('email', email);
-    payload.append('category', subjectLabel);
-    payload.append('message', message);
-    payload.append('_subject', '【HEIC Converter】' + subjectLabel);
-    payload.append('_captcha', 'false');
-    payload.append('_template', 'table');
-
-    const res = await fetch('https://formsubmit.co/ajax/baseballbear0321@gmail.com', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: payload
+  function loadScriptOnce(src){
+    return new Promise((resolve, reject)=>{
+      const existing = document.querySelector('script[data-libheif-loader="1"][src="'+src+'"]');
+      if(existing){
+        if(existing.dataset.loaded === '1'){ resolve(); return }
+        existing.addEventListener('load', ()=>resolve(), {once:true});
+        existing.addEventListener('error', ()=>reject(new Error(src)), {once:true});
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.dataset.libheifLoader = '1';
+      s.onload = ()=>{ s.dataset.loaded = '1'; resolve(); };
+      s.onerror = ()=>reject(new Error('スクリプトの取得に失敗: '+src));
+      (document.head || document.documentElement).appendChild(s);
     });
-    const data = await res.json().catch(()=>null);
-    if(!res.ok || (data && data.success === 'false')){
-      throw new Error('送信に失敗しました');
-    }
+  }
 
-    alert('お問い合わせありがとうございます。送信が完了しました。');
-    e.target.reset();
-    closeModal(contactModal);
-  }catch(err){
-    alert('送信に失敗しました。時間をおいて再度お試しください。');
-  }finally{
-    if(submitBtn){
-      submitBtn.disabled = false;
-      submitBtn.textContent = prevLabel || 'メッセージを送信する';
+  let libheifLoadInflight = null;
+  async function ensureLibheifScript(){
+    if(typeof libheif !== 'undefined') return;
+    if(!libheifLoadInflight){
+      libheifLoadInflight = (async ()=>{
+        let lastErr = null;
+        for(const url of LIBHEIF_SCRIPT_URLS){
+          try{
+            $('wasmLabel').textContent = 'libheif を読み込み中（初回は数秒かかることがあります）...';
+            await loadScriptOnce(url);
+            if(typeof libheif !== 'undefined') return;
+          }catch(e){ lastErr = e; }
+        }
+        throw lastErr || new Error('libheif スクリプトをどの CDN からも読み込めませんでした');
+      })().finally(()=>{ libheifLoadInflight = null; });
+    }
+    await libheifLoadInflight;
+    if(typeof libheif === 'undefined'){
+      throw new Error('libheif が定義されませんでした（スクリプトは読み込めたが API が見つかりません）');
     }
   }
-});
 
-const dropZone = $('dropZone');
-dropZone.onclick = () => $('fileInput').click();
-dropZone.ondragover = e=>{e.preventDefault();dropZone.classList.add('drag-over')};
-dropZone.ondragleave = ()=>dropZone.classList.remove('drag-over');
-dropZone.ondrop = e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])};
-$('fileInput').onchange = ()=>{if($('fileInput').files[0])loadFile($('fileInput').files[0])};
-
-async function loadFile(file){
-  currentFile = file;
-  outputBlob = null;
-  $('cardAfter').style.display = 'none';
-  $('btnDl').style.display = 'none';
-  setStatus('');
-
-  const ext = file.name.toLowerCase().split('.').pop();
-  const isHeic = ext==='heic';
-  const origFmt = isHeic ? 'heic' : (ext==='png'?'png':'jpeg');
-
-  if(isHeic){
-    setLoader(true,'HEICをデコード中（libheif-wasm）...');
+  async function initLibheif(){
     try{
       await ensureLibheifScript();
-      const buf = await file.arrayBuffer();
-      const data = new Uint8Array(buf);
+      const lib = await libheif();
+      heifDecoder = new lib.HeifDecoder();
+      $('wasmDot').className = 'wasm-dot ready';
+      $('wasmLabel').textContent = 'HEIC Converter準備完了（Chrome・Safari 対応）';
+    }catch(e){
+      $('wasmDot').className = 'wasm-dot';
+      $('wasmLabel').textContent = 'HEIC Converter初期化エラー: '+e.message;
+    }
+  }
+  initLibheif();
 
-      if(!heifDecoder){
-        const lib = await libheif();
-        heifDecoder = new lib.HeifDecoder();
+  const fmtOptions = {
+    heic: [{v:'jpeg',l:'JPEG'},{v:'png',l:'PNG'},{v:'webp',l:'WebP'}],
+    jpeg: [{v:'jpeg',l:'JPEG（圧縮）'},{v:'png',l:'PNG'},{v:'webp',l:'WebP'}],
+    png:  [{v:'webp',l:'WebP'},{v:'jpeg',l:'JPEG'},{v:'png',l:'PNG（最適化）'}]
+  };
+
+  function buildFmtPills(fmt, def){
+    const container = $('fmtPills');
+    container.innerHTML = '';
+    selectedFmt = def;
+    fmt.forEach(f=>{
+      const p = document.createElement('span');
+      p.className = 'pill' + (f.v===def?' active':'');
+      p.textContent = f.l;
+      p.onclick = ()=>{
+        container.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+        p.classList.add('active');
+        selectedFmt = f.v;
+        $('qualityRow').style.display = f.v==='png'?'none':'flex';
+      };
+      container.appendChild(p);
+    });
+    $('qualityRow').style.display = def==='png'?'none':'flex';
+  }
+
+  $('quality').oninput = () => $('qualityVal').textContent = $('quality').value;
+  $('compressPills').querySelectorAll('.pill').forEach(p=>{
+    p.onclick=()=>{
+      $('compressPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      $('quality').value = p.dataset.q;
+      $('qualityVal').textContent = p.dataset.q;
+    };
+  });
+
+  function fillResizeInputs(w, h){
+    originalWidth = w;
+    originalHeight = h;
+    resizeWidth = w;
+    resizeHeight = h;
+    resizeRatio = 100;
+    $('resizeWidth').value = w;
+    $('resizeHeight').value = h;
+    $('ratioInput').value = 100;
+    $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
+    if(defaultRatioPill) defaultRatioPill.classList.add('active');
+  }
+
+  $('resizeWidth').addEventListener('input', ()=>{
+    const w = parseInt($('resizeWidth').value, 10);
+    if(!w || w < 1){ resizeWidth = 0; return; }
+    resizeWidth = w;
+    if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+      const h = Math.max(1, Math.round((w / originalWidth) * originalHeight));
+      resizeHeight = h;
+      $('resizeHeight').value = h;
+    }
+  });
+  $('resizeHeight').addEventListener('input', ()=>{
+    const h = parseInt($('resizeHeight').value, 10);
+    if(!h || h < 1){ resizeHeight = 0; return; }
+    resizeHeight = h;
+    if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+      const w = Math.max(1, Math.round((h / originalHeight) * originalWidth));
+      resizeWidth = w;
+      $('resizeWidth').value = w;
+    }
+  });
+  function setResizeMode(mode){
+    resizeMode = mode;
+    const isPixel = mode === 'pixel';
+    $('resizeModePixel').classList.toggle('active', isPixel);
+    $('resizeModeRatio').classList.toggle('active', !isPixel);
+    $('pixelResizePanel').style.display = isPixel ? 'block' : 'none';
+    $('ratioResizePanel').style.display = isPixel ? 'none' : 'block';
+    // 比率モードでは縦横比固定のため、関連チェックは非表示にする
+    $('lockAspectRow').classList.toggle('hidden', !isPixel);
+    $('preventUpscaleRow').classList.toggle('hidden', !isPixel);
+    if(!isPixel){
+      // 比率モードでは上限を100%にして拡大を防止
+      if((parseInt($('ratioInput').value, 10) || 100) > 100){
+        $('ratioInput').value = 100;
+        resizeRatio = 100;
+        $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+        const defaultRatioPill = $('ratioPills').querySelector('[data-ratio="100"]');
+        if(defaultRatioPill) defaultRatioPill.classList.add('active');
+      }
+    }
+  }
+  $('resizeModePixel').onclick = ()=>setResizeMode('pixel');
+  $('resizeModeRatio').onclick = ()=>setResizeMode('ratio');
+  $('ratioPills').querySelectorAll('.pill').forEach(p=>{
+    p.onclick = ()=>{
+      $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const val = parseInt(p.dataset.ratio, 10);
+      resizeRatio = val;
+      $('ratioInput').value = val;
+    };
+  });
+  $('ratioInput').addEventListener('input', ()=>{
+    const val = parseInt($('ratioInput').value, 10);
+    if(!val || val < 1){ resizeRatio = 0; return; }
+    const max = resizeMode === 'ratio' ? 100 : 400;
+    resizeRatio = Math.min(max, val);
+    $('ratioInput').value = resizeRatio;
+    $('ratioPills').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    const matched = $('ratioPills').querySelector('[data-ratio="'+resizeRatio+'"]');
+    if(matched) matched.classList.add('active');
+  });
+
+  const menuBtn = $('menuBtn');
+  const topMenu = $('topMenu');
+  const termsModal = $('termsModal');
+  const contactModal = $('contactModal');
+
+  function closeMenu(){
+    topMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+  function openMenu(){
+    topMenu.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeModal(modalEl){
+    modalEl.classList.remove('open');
+    modalEl.setAttribute('aria-hidden', 'true');
+  }
+  function openModal(modalEl){
+    closeModal(termsModal);
+    closeModal(contactModal);
+    modalEl.classList.add('open');
+    modalEl.setAttribute('aria-hidden', 'false');
+  }
+
+  menuBtn.onclick = e=>{
+    e.stopPropagation();
+    const isOpen = topMenu.classList.contains('open');
+    if(isOpen) closeMenu();
+    else openMenu();
+  };
+  $('openTermsBtn').onclick = ()=>{
+    closeMenu();
+    openModal(termsModal);
+  };
+  $('openPrivacyBtn').onclick = ()=>closeMenu();
+  $('openContactBtn').onclick = ()=>{
+    closeMenu();
+    openModal(contactModal);
+  };
+  $('closeTermsBtn').onclick = ()=>closeModal(termsModal);
+  $('closeContactBtn').onclick = ()=>closeModal(contactModal);
+  termsModal.addEventListener('click', e=>{
+    if(e.target === termsModal) closeModal(termsModal);
+  });
+  contactModal.addEventListener('click', e=>{
+    if(e.target === contactModal) closeModal(contactModal);
+  });
+  document.addEventListener('click', e=>{
+    if(!topMenu.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)){
+      closeMenu();
+    }
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){
+      closeMenu();
+      closeModal(termsModal);
+      closeModal(contactModal);
+    }
+  });
+  $('jumpTermsLink').onclick = ()=>{
+    closeModal(contactModal);
+    openModal(termsModal);
+  };
+  $('jumpPrivacyLink').onclick = ()=>{
+    window.open('privacy.html', '_blank', 'noopener');
+  };
+  $('contactForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name = $('contactName').value.trim();
+    const email = $('contactEmail').value.trim();
+    const subjectKey = $('contactSubject').value;
+    const message = $('contactMessage').value.trim();
+    const consent = $('contactConsent').checked;
+
+    if(!name || !email || !subjectKey || !message){
+      alert('必須項目をすべて入力してください。');
+      return;
+    }
+    if(!consent){
+      alert('利用規約とプライバシーポリシーへの同意が必要です。');
+      return;
+    }
+
+    const subjectMap = {
+      bug: '不具合報告',
+      question: '使い方の質問',
+      request: '機能要望',
+      other: 'その他'
+    };
+    const subjectLabel = subjectMap[subjectKey] || 'お問い合わせ';
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const prevLabel = submitBtn ? submitBtn.textContent : '';
+
+    try{
+      if(submitBtn){
+        submitBtn.disabled = true;
+        submitBtn.textContent = '送信中...';
       }
 
-      const decoded = heifDecoder.decode(data);
-      if(!decoded||!decoded.length) throw new Error('デコード結果が空です');
-      const img = decoded[0];
-      const w = img.get_width();
-      const h = img.get_height();
+      const payload = new FormData();
+      payload.append('name', name);
+      payload.append('email', email);
+      payload.append('category', subjectLabel);
+      payload.append('message', message);
+      payload.append('_subject', '【HEIC Converter】' + subjectLabel);
+      payload.append('_captcha', 'false');
+      payload.append('_template', 'table');
 
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.createImageData(w, h);
-
-      await new Promise((res,rej)=>{
-        img.display(imageData, d=>{
-          if(!d){rej(new Error('display() 失敗'));return}
-          ctx.putImageData(d,0,0);
-          res();
-        });
+      const res = await fetch('https://formsubmit.co/ajax/baseballbear0321@gmail.com', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: payload
       });
+      const data = await res.json().catch(()=>null);
+      if(!res.ok || (data && data.success === 'false')){
+        throw new Error('送信に失敗しました');
+      }
 
-      currentCanvas = canvas;
-      fillResizeInputs(w, h);
-      const url = canvas.toDataURL('image/jpeg',0.7);
-      showBefore(url, file.name, file.size, 'heic', w+'×'+h);
-      buildFmtPills(fmtOptions.heic, 'jpeg');
-      $('controls').style.display = 'block';
-      $('btnConvert').style.display = 'block';
-      setStatus('HEIC デコード完了', 'ok');
+      alert('お問い合わせありがとうございます。送信が完了しました。');
+      e.target.reset();
+      closeModal(contactModal);
+    }catch(err){
+      alert('送信に失敗しました。時間をおいて再度お試しください。');
+    }finally{
+      if(submitBtn){
+        submitBtn.disabled = false;
+        submitBtn.textContent = prevLabel || 'メッセージを送信する';
+      }
+    }
+  });
+
+  const dropZone = $('dropZone');
+  dropZone.onclick = () => $('fileInput').click();
+  dropZone.ondragover = e=>{e.preventDefault();dropZone.classList.add('drag-over')};
+  dropZone.ondragleave = ()=>dropZone.classList.remove('drag-over');
+  dropZone.ondrop = e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])};
+  $('fileInput').onchange = ()=>{if($('fileInput').files[0])loadFile($('fileInput').files[0])};
+
+  async function loadFile(file){
+    currentFile = file;
+    outputBlob = null;
+    $('cardAfter').style.display = 'none';
+    $('btnDl').style.display = 'none';
+    setStatus('');
+
+    const ext = file.name.toLowerCase().split('.').pop();
+    const isHeic = ext==='heic';
+    const origFmt = isHeic ? 'heic' : (ext==='png'?'png':'jpeg');
+
+    if(isHeic){
+      setLoader(true,'HEICをデコード中（libheif-wasm）...');
+      try{
+        await ensureLibheifScript();
+        const buf = await file.arrayBuffer();
+        const data = new Uint8Array(buf);
+
+        if(!heifDecoder){
+          const lib = await libheif();
+          heifDecoder = new lib.HeifDecoder();
+        }
+
+        const decoded = heifDecoder.decode(data);
+        if(!decoded||!decoded.length) throw new Error('デコード結果が空です');
+        const img = decoded[0];
+        const w = img.get_width();
+        const h = img.get_height();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.createImageData(w, h);
+
+        await new Promise((res,rej)=>{
+          img.display(imageData, d=>{
+            if(!d){rej(new Error('display() 失敗'));return}
+            ctx.putImageData(d,0,0);
+            res();
+          });
+        });
+
+        currentCanvas = canvas;
+        fillResizeInputs(w, h);
+        const url = canvas.toDataURL('image/jpeg',0.7);
+        showBefore(url, file.name, file.size, 'heic', w+'×'+h);
+        buildFmtPills(fmtOptions.heic, 'jpeg');
+        $('controls').style.display = 'block';
+        $('btnConvert').style.display = 'block';
+        setStatus('HEIC デコード完了', 'ok');
+      }catch(e){
+        setStatus('HEICデコードエラー: '+e.message, 'err');
+      }finally{
+        setLoader(false);
+      }
+    } else {
+      const url = URL.createObjectURL(file);
+      const imgEl = new Image();
+      imgEl.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        canvas.width = imgEl.naturalWidth;
+        canvas.height = imgEl.naturalHeight;
+        canvas.getContext('2d').drawImage(imgEl, 0, 0);
+        currentCanvas = canvas;
+        fillResizeInputs(imgEl.naturalWidth, imgEl.naturalHeight);
+        showBefore(url, file.name, file.size, origFmt, imgEl.naturalWidth+'×'+imgEl.naturalHeight);
+        const def = origFmt==='png'?'webp':'jpeg';
+        buildFmtPills(fmtOptions[origFmt]||fmtOptions.jpeg, def);
+        $('controls').style.display = 'block';
+        $('btnConvert').style.display = 'block';
+        setStatus('');
+      };
+      imgEl.src = url;
+    }
+  }
+
+  function showBefore(url, name, size, fmtKey, dims){
+    $('imgBefore').src = url;
+    const bdg = {'heic':'badge-heic','jpeg':'badge-jpg','jpg':'badge-jpg','png':'badge-png','webp':'badge-webp'};
+    $('nameBefore').innerHTML = name.length>28?name.slice(0,25)+'...':name;
+    $('nameBefore').innerHTML += ' <span class="badge '+(bdg[fmtKey]||'badge-jpg')+'">'+fmtKey.toUpperCase()+'</span>';
+    $('metaBefore').textContent = fmt(size) + (dims?' • '+dims:'');
+    $('cardBefore').style.display = 'block';
+  }
+
+  $('btnConvert').onclick = async()=>{
+    if(!currentCanvas){setStatus('先に画像を選択してください','err');return}
+    $('btnConvert').disabled = true;
+    $('btnDl').style.display = 'none';
+    $('cardAfter').style.display = 'none';
+    setLoader(true,'変換中...');
+    setStatus('');
+
+    try{
+      await new Promise(r=>setTimeout(r,30));
+      const canvas = document.createElement('canvas');
+      let w = currentCanvas.width;
+      let h = currentCanvas.height;
+
+      if(resizeMode === 'ratio'){
+        const ratio = (parseInt($('ratioInput').value, 10) || resizeRatio || 100) / 100;
+        w = Math.max(1, Math.round(currentCanvas.width * ratio));
+        h = Math.max(1, Math.round(currentCanvas.height * ratio));
+        $('resizeWidth').value = w;
+        $('resizeHeight').value = h;
+      }else{
+        w = parseInt($('resizeWidth').value, 10) || currentCanvas.width;
+        h = parseInt($('resizeHeight').value, 10) || currentCanvas.height;
+        if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+          const fromW = Math.max(1, Math.round((w / originalWidth) * originalHeight));
+          h = fromW;
+          $('resizeHeight').value = h;
+        }
+      }
+      const shouldLockAspect = resizeMode === 'ratio' ? true : $('lockAspect').checked;
+      const shouldPreventUpscale = resizeMode === 'ratio' ? true : $('preventUpscale').checked;
+      if(shouldPreventUpscale){
+        if(shouldLockAspect){
+          const ratio = Math.min(currentCanvas.width / w, currentCanvas.height / h, 1);
+          w = Math.max(1, Math.round(w * ratio));
+          h = Math.max(1, Math.round(h * ratio));
+        }else{
+          w = Math.min(w, currentCanvas.width);
+          h = Math.min(h, currentCanvas.height);
+        }
+      }
+
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(currentCanvas, 0, 0, w, h);
+
+      const mimeMap = {jpeg:'image/jpeg',png:'image/png',webp:'image/webp'};
+      const mime = mimeMap[selectedFmt]||'image/jpeg';
+      const q = selectedFmt==='png'?undefined:parseInt($('quality').value)/100;
+
+      const isKeepExif = $('keepExif').checked;
+      let finalBlob = await new Promise(res=>canvas.toBlob(res, mime, q));
+      if(!finalBlob)throw new Error('Blob生成失敗');
+
+      if(isKeepExif && selectedFmt==='jpeg' && typeof piexif !== 'undefined'){
+        try{
+          const exifData = await new Promise((res, rej)=>{
+            const reader = new FileReader();
+            reader.onload = e=>res(e.target.result);
+            reader.onerror = ()=>rej(new Error('元画像の読み込みに失敗'));
+            reader.readAsDataURL(currentFile);
+          });
+
+          const newImageData = await new Promise((res, rej)=>{
+            const r = new FileReader();
+            r.onload = e=>res(e.target.result);
+            r.onerror = ()=>rej(new Error('変換後画像の読み込みに失敗'));
+            r.readAsDataURL(finalBlob);
+          });
+
+          const exifObj = piexif.load(exifData);
+          const exifStr = piexif.dump(exifObj);
+          const inserted = piexif.insert(exifStr, newImageData);
+
+          const byteString = atob(inserted.split(',')[1]);
+          const ab = new ArrayBuffer(byteString.length);
+          const ia = new Uint8Array(ab);
+          for(let i=0;i<byteString.length;i++) ia[i] = byteString.charCodeAt(i);
+          finalBlob = new Blob([ab], {type:mime});
+        }catch(e){
+          console.warn('EXIFの保持に失敗しました:', e);
+        }
+      }
+      outputBlob = finalBlob;
+
+      const extMap = {jpeg:'jpg',png:'png',webp:'webp'};
+      const outName = (currentFile.name.replace(/\.[^.]+$/,'')||'converted')+'.'+extMap[selectedFmt];
+      const savings = Math.round((1-finalBlob.size/currentFile.size)*100);
+      const bdg2 = {jpeg:'badge-jpg',png:'badge-png',webp:'badge-webp'};
+
+      $('imgAfter').src = URL.createObjectURL(finalBlob);
+      $('nameAfter').innerHTML = outName+' <span class="badge '+(bdg2[selectedFmt]||'badge-jpg')+'">'+selectedFmt.toUpperCase()+'</span>';
+      $('metaAfter').innerHTML = fmt(finalBlob.size)+(savings>0?' <span class="badge badge-save">-'+savings+'%</span>':'');
+      $('cardAfter').style.display = 'block';
+      $('btnDl').style.display = 'block';
+      $('btnDl').dataset.name = outName;
+      setStatus('変換完了！', 'ok');
     }catch(e){
-      setStatus('HEICデコードエラー: '+e.message, 'err');
+      setStatus('変換エラー: '+e.message,'err');
     }finally{
       setLoader(false);
+      $('btnConvert').disabled = false;
     }
-  } else {
-    const url = URL.createObjectURL(file);
-    const imgEl = new Image();
-    imgEl.onload = ()=>{
-      const canvas = document.createElement('canvas');
-      canvas.width = imgEl.naturalWidth;
-      canvas.height = imgEl.naturalHeight;
-      canvas.getContext('2d').drawImage(imgEl, 0, 0);
-      currentCanvas = canvas;
-      fillResizeInputs(imgEl.naturalWidth, imgEl.naturalHeight);
-      showBefore(url, file.name, file.size, origFmt, imgEl.naturalWidth+'×'+imgEl.naturalHeight);
-      const def = origFmt==='png'?'webp':'jpeg';
-      buildFmtPills(fmtOptions[origFmt]||fmtOptions.jpeg, def);
-      $('controls').style.display = 'block';
-      $('btnConvert').style.display = 'block';
-      setStatus('');
-    };
-    imgEl.src = url;
-  }
-}
+  };
 
-function showBefore(url, name, size, fmtKey, dims){
-  $('imgBefore').src = url;
-  const bdg = {'heic':'badge-heic','jpeg':'badge-jpg','jpg':'badge-jpg','png':'badge-png','webp':'badge-webp'};
-  $('nameBefore').innerHTML = name.length>28?name.slice(0,25)+'...':name;
-  $('nameBefore').innerHTML += ' <span class="badge '+(bdg[fmtKey]||'badge-jpg')+'">'+fmtKey.toUpperCase()+'</span>';
-  $('metaBefore').textContent = fmt(size) + (dims?' • '+dims:'');
-  $('cardBefore').style.display = 'block';
-}
+  $('btnDl').onclick = ()=>{
+    if(!outputBlob)return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(outputBlob);
+    a.download = $('btnDl').dataset.name||'converted';
+    a.click();
+  };
+  </script>
 
-$('btnConvert').onclick = async()=>{
-  if(!currentCanvas){setStatus('先に画像を選択してください','err');return}
-  $('btnConvert').disabled = true;
-  $('btnDl').style.display = 'none';
-  $('cardAfter').style.display = 'none';
-  setLoader(true,'変換中...');
-  setStatus('');
-
-  try{
-    await new Promise(r=>setTimeout(r,30));
-    const canvas = document.createElement('canvas');
-    let w = currentCanvas.width;
-    let h = currentCanvas.height;
-
-    if(resizeMode === 'ratio'){
-      const ratio = (parseInt($('ratioInput').value, 10) || resizeRatio || 100) / 100;
-      w = Math.max(1, Math.round(currentCanvas.width * ratio));
-      h = Math.max(1, Math.round(currentCanvas.height * ratio));
-      $('resizeWidth').value = w;
-      $('resizeHeight').value = h;
-    }else{
-      w = parseInt($('resizeWidth').value, 10) || currentCanvas.width;
-      h = parseInt($('resizeHeight').value, 10) || currentCanvas.height;
-      if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
-        const fromW = Math.max(1, Math.round((w / originalWidth) * originalHeight));
-        h = fromW;
-        $('resizeHeight').value = h;
-      }
-    }
-    const shouldLockAspect = resizeMode === 'ratio' ? true : $('lockAspect').checked;
-    const shouldPreventUpscale = resizeMode === 'ratio' ? true : $('preventUpscale').checked;
-    if(shouldPreventUpscale){
-      if(shouldLockAspect){
-        const ratio = Math.min(currentCanvas.width / w, currentCanvas.height / h, 1);
-        w = Math.max(1, Math.round(w * ratio));
-        h = Math.max(1, Math.round(h * ratio));
-      }else{
-        w = Math.min(w, currentCanvas.width);
-        h = Math.min(h, currentCanvas.height);
-      }
-    }
-
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(currentCanvas, 0, 0, w, h);
-
-    const mimeMap = {jpeg:'image/jpeg',png:'image/png',webp:'image/webp'};
-    const mime = mimeMap[selectedFmt]||'image/jpeg';
-    const q = selectedFmt==='png'?undefined:parseInt($('quality').value)/100;
-
-    const isKeepExif = $('keepExif').checked;
-    let finalBlob = await new Promise(res=>canvas.toBlob(res, mime, q));
-    if(!finalBlob)throw new Error('Blob生成失敗');
-
-    if(isKeepExif && selectedFmt==='jpeg' && typeof piexif !== 'undefined'){
-      try{
-        const exifData = await new Promise((res, rej)=>{
-          const reader = new FileReader();
-          reader.onload = e=>res(e.target.result);
-          reader.onerror = ()=>rej(new Error('元画像の読み込みに失敗'));
-          reader.readAsDataURL(currentFile);
-        });
-
-        const newImageData = await new Promise((res, rej)=>{
-          const r = new FileReader();
-          r.onload = e=>res(e.target.result);
-          r.onerror = ()=>rej(new Error('変換後画像の読み込みに失敗'));
-          r.readAsDataURL(finalBlob);
-        });
-
-        const exifObj = piexif.load(exifData);
-        const exifStr = piexif.dump(exifObj);
-        const inserted = piexif.insert(exifStr, newImageData);
-
-        const byteString = atob(inserted.split(',')[1]);
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for(let i=0;i<byteString.length;i++) ia[i] = byteString.charCodeAt(i);
-        finalBlob = new Blob([ab], {type:mime});
-      }catch(e){
-        console.warn('EXIFの保持に失敗しました:', e);
-      }
-    }
-    outputBlob = finalBlob;
-
-    const extMap = {jpeg:'jpg',png:'png',webp:'webp'};
-    const outName = (currentFile.name.replace(/\.[^.]+$/,'')||'converted')+'.'+extMap[selectedFmt];
-    const savings = Math.round((1-finalBlob.size/currentFile.size)*100);
-    const bdg2 = {jpeg:'badge-jpg',png:'badge-png',webp:'badge-webp'};
-
-    $('imgAfter').src = URL.createObjectURL(finalBlob);
-    $('nameAfter').innerHTML = outName+' <span class="badge '+(bdg2[selectedFmt]||'badge-jpg')+'">'+selectedFmt.toUpperCase()+'</span>';
-    $('metaAfter').innerHTML = fmt(finalBlob.size)+(savings>0?' <span class="badge badge-save">-'+savings+'%</span>':'');
-    $('cardAfter').style.display = 'block';
-    $('btnDl').style.display = 'block';
-    $('btnDl').dataset.name = outName;
-    setStatus('変換完了！', 'ok');
-  }catch(e){
-    setStatus('変換エラー: '+e.message,'err');
-  }finally{
-    setLoader(false);
-    $('btnConvert').disabled = false;
-  }
-};
-
-$('btnDl').onclick = ()=>{
-  if(!outputBlob)return;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(outputBlob);
-  a.download = $('btnDl').dataset.name||'converted';
-  a.click();
-};
-</script>
+</body>
+</html>
