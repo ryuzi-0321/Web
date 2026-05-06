@@ -183,6 +183,13 @@
         .contact-submit{background:#4b84df}
         .contact-submit:hover{background:#3a74d0}
       }
+        .table-container { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        th, td { border: 1px solid var(--color-border-secondary); padding: 12px; text-align: left; }
+        th { background-color: var(--color-background-secondary); color: var(--color-text-primary); }
+        td:first-child { background-color: #fafafa;font-weight: bold; width: 120px; }
+        tr:hover { background-color: var(--color-background-secondary); }
+
     </style>
 </head>
 <body>
@@ -347,6 +354,64 @@
         <li><strong>6. 画質の最適化</strong>: 変換時に画質を損なわないよう、最適な圧縮アルゴリズムを採用しています。</li>
       </ul>
     </section>
+
+    <section class="content-section hero-note">
+      <h2>HEIC Converterの使い方</h2>
+      <p>HEIC Converterは、iPhoneで撮影したHEIC形式の画像を、ブラウザ上で簡単にJPGやPNGに変換できるオンラインツールです。以下の手順でご利用いただけます。</p>
+      <ol>
+        <li><strong>画像を選択</strong>: 変換したいHEICファイルを、画面中央のドロップゾーンにドラッグ＆ドロップするか、クリックしてファイル選択ダイアログから選びます。複数ファイルの同時選択も可能です。</li>
+        <li><strong>変換オプションを設定</strong>: 変換後の画像形式（JPGまたはPNG）を選択し、必要に応じて画質やサイズ変更のオプションを設定します。</li>
+        <li><strong>変換を開始</strong>: 「変換する」ボタンをクリックすると、HEICファイルがブラウザ内で処理され、指定した形式に変換されます。</li>
+        <li><strong>変換後の画像をダウンロード</strong>: 変換が完了すると、ダウンロードリンクが表示されます。クリックして変換された画像を保存してください。</li>
+      </ol>
+      <li><strong>注意点</strong>: 変換処理は完全にクライアントサイドで行われるため、画像データは一切サーバーに送信されません。安心してご利用いただけますが、変換には一定の時間がかかる場合がありますので、しばらくお待ちください。</li>
+    </section>
+
+    <section class="content-section hero-note">
+      <h2>HEIC Converterの特徴</h2>
+      <ul>
+        <li><strong>簡単な操作で変換</strong>: 1つまたは複数のファイルをPCやiPhone上で選択するか、これらをドラッグ&ドロップすることで変換できます。</li>
+        <li><strong>変換オプション</strong>: 出力画像ファイルの品質、リサイズ、圧縮その他のパラメータを指定できます。</li>
+        <li><strong>複数のファイルをまとめて変換</strong>: 画像のサイズや数によっては、変換処理に時間がかかる場合があります。特に複数ファイルを一度に変換する場合は、処理が完了するまでしばらくお待ちください。</li>
+        <li><strong>EXIF情報の保持</strong>: HEICファイルに含まれる撮影日時や位置情報などのEXIFデータを、変換後のJPGファイルに保持できます。</li>
+        <li><strong>ソフトウェアのダウンロードは不要</strong>: アプリをダウンロードしたり、会員登録したりする手間は一切ありません。ブラウザで開くだけで、PCでもスマホでもすぐにご利用いただけます。</li>
+        <li><strong>完全クライアントサイド処理</strong>: 画像データは一切サーバーに送信されません。あなたのスマホやPC内で完結するため、プライバシー漏洩の心配がありません。</li>
+      </ul>
+    </section>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>形式</th>
+            <th>特徴</th>
+            <th>メリット</th>
+            <th>デメリット</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HEIC</strong></td>
+            <td>高画質でファイルサイズが小さい新しい画像形式</td>
+            <td>高品質な写真を小さなファイルサイズで保存できる</td>
+            <td>Windowsや一部のWebサービスで互換性が低い</td>
+          </tr>
+          <tr>
+            <td><strong>JPG (JPEG)</strong></td>
+            <td>最も一般的な画像形式で、広くサポートされている</td>
+            <td>ほぼすべてのデバイスやサービスで開ける</td>
+            <td>HEICに比べてファイルサイズが大きくなることがある</td>
+          </tr>
+          <tr>
+            <td><strong>PNG</strong></td>
+            <td>可逆圧縮を使用する画像形式で、透明度をサポート</td>
+            <td>透明な背景を持つ画像に最適。画質の劣化なしに保存できる</td>
+            <td>写真にはあまり適しておらず、ファイルサイズが非常に大きくなることがある</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <section class="content-section hero-note">
       <h2>iPhoneの設定でHEICを無効にする方法</h2>
       <p>そもそもiPhoneの設定でHEICで保存したくないという方におすすめの方法をご紹介します。</p>
@@ -358,6 +423,59 @@
       </ol>
       <p>これでiPhoneで撮影した写真は、HEICではなくJPGで保存されるようになります。</p>
       <p>※「互換性優先」にするとJPGで保存されるようになりますが、ファイルサイズが大きくなる点に注意が必要です。すでに撮影済みの写真は、ぜひ当ツールで変換して活用してください。</p>
+    </section>
+
+    <section class="content-section hero-note">
+      <h2>HEIC Converterの開発背景</h2>
+      <p>HEIC Converterは、iPhoneユーザーが直面する「HEIC形式の画像がPCやWebで扱いづらい」という問題を解決するために開発されました。私自身もiPhoneで撮影した写真をPCで編集したり、SNSにアップロードしたりする際に、HEICの互換性の問題に何度も悩まされてきました。そこで、ブラウザだけで簡単にHEICをJPGに変換できるツールを作ろうと考え、このプロジェクトを立ち上げました。</p>
+      <p>当初は個人的なプロジェクトとして始めましたが、多くの人から「同じ問題に困っている」「このツールがあれば助かる」といった声をいただき、より多くの人に使ってもらえるよう公開することにしました。今後もユーザーのフィードバックをもとに機能改善や新機能の追加を行い、より便利なツールへと進化させていきたいと思っています。</p>
+      <ol>
+        <li><strong>2026年4月</strong>: プロジェクト開始。基本的なHEICからJPGへの変換機能を実装。</li>
+        <li><strong>2026年5月</strong>: 画像のリサイズ機能とEXIF情報の保持オプションを追加。</li>
+        <li><strong>2026年5月</strong>: ユーザーインターフェースの改善と、変換品質の最適化を実施。</li>
+        <li><strong>2027年5月</strong>: 公開開始。ユーザーフィードバックをもとにバグ修正と機能追加を継続中。</li>
+      </ol>
+    </section>
+
+    <section class="content-section hero-note">
+      <h2>対応ブラウザとシステム要件</h2>
+      <p>HEIC Converterは、最新のWeb技術を活用しているため、以下のブラウザでの利用を推奨します。</p>
+      <ul>
+        <li><strong>Google Chrome</strong>: バージョン80以降</li>
+        <li><strong>Mozilla Firefox</strong>: バージョン75以降</li>
+        <li><strong>Microsoft Edge</strong>: バージョン80以降</li>
+        <li><strong>Apple Safari</strong>: バージョン13以降（HEICのサポートが必要）</li>
+      </ul>
+      <p>また、HEICファイルの処理には一定の計算リソースが必要なため、以下のシステム要件を満たすことをおすすめします。</p>
+      <ul>
+        <li><strong>CPU:</strong> デュアルコア以上のプロセッサ</li>
+        <li><strong>RAM:</strong> 4GB以上（複数ファイルの変換や大きなファイルの場合は8GB以上を推奨）</li>
+        <li><strong>ストレージ:</strong> 変換後のファイルを保存するための十分な空き容量</li>
+      </ul>
+      <p>これらの要件を満たす環境であれば、スムーズにHEICからJPGへの変換が可能です。古いブラウザや低スペックのデバイスでは、変換に時間がかかる場合がありますのでご注意ください。</p>
+    </section>
+
+    <section class="content-section hero-note">
+      <h2>HEIC Converterの利用規約とプライバシーポリシー</h2>
+      <p>HEIC Converterをご利用いただく前に、以下の利用規約とプライバシーポリシーを必ずお読みください。ご利用をもって、これらの規約に同意したものとみなされます。</p>
+      <h3>利用規約</h3>
+      <ul>
+        <li><strong>サービス内容:</strong> HEIC Converterは、ブラウザ上でHEICファイルをJPGやPNGなどの一般的な画像形式に変換する無料のオンラインツールです。</li>
+        <li><strong>禁止事項:</strong> 法令違反、公序良俗に反する行為、第三者の権利を侵害する行為、または当サービスの運営を妨げる行為は禁止します。</li>
+        <li><strong>免責事項:</strong> 当サービスの利用により生じた損害について、運営者は一切責任を負いません。必要に応じてデータのバックアップを行ってください。</li>
+      </ul>
+      <h3>プライバシーポリシー</h3>
+      <p>HEIC Converterは、ユーザーのプライバシーを尊重し、個人情報の保護に努めています。当サービスは完全クライアントサイドで動作し、ユーザーがアップロードした画像データは一切サーバーに送信されません。したがって、個人情報や画像データが外部に漏洩することはありません。</p>
+    </section>
+
+    <section class="content-section hero-note">
+      <h2>よくある質問（FAQ）</h2>
+      <h3>Q1: 変換した画像の画質はどうなりますか？</h3>
+      <p>A1: 変換後の画像は、元のHEICファイルの品質をできるだけ保つように最適化されています。品質設定を調整することで、さらに画質を向上させることも可能です。</p>
+      <h3>Q2: 変換した画像のEXIF情報は保持されますか？</h3>
+      <p>A2: デフォルトでは、撮影日時やカメラ情報などのEXIFデータは保持されますが、必要に応じてオプションで削除することもできます。</p>
+      <h3>Q3: 変換できる画像の最大サイズはありますか？</h3>
+      <p>A3: ブラウザの制限により、1枚あたり最大100MB程度の画像を変換できます。ただし、処理時間が長くなる可能性があるため、大きなファイルは事前にリサイズすることをおすすめします。</p>
     </section>
   </div>
 
