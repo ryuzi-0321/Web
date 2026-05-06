@@ -86,7 +86,7 @@
       .ratio-row{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
       .ratio-input{width:92px;border:1px solid var(--color-border-secondary);border-radius:8px;padding:.42rem .5rem;background:#fff;color:var(--color-text-primary)}
       .hidden{display:none !important}
-      .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+      .preview-grid{display:grid;grid-template-columns:repeat(3 ,1fr);gap:1rem;margin-bottom:1.25rem}
       @media(max-width:520px){.preview-grid{grid-template-columns:1fr}}
       @media(max-width:520px){
         .topbar{height:54px;padding:0 .75rem}
@@ -97,7 +97,7 @@
         .drop-sub{font-size:.95rem}
         .resize-grid{grid-template-columns:1fr}
       }
-      .preview-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;display:none}
+      .preview-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;display:block;}
       .preview-card img{width:100%;display:block;max-height:200px;object-fit:contain;background:var(--color-background-secondary)}
       .preview-info{padding:.75rem 1rem;border-top:0.5px solid var(--color-border-tertiary)}
       .preview-label{font-size:11px;color:var(--color-text-tertiary);letter-spacing:.4px;margin-bottom:4px}
@@ -142,6 +142,9 @@
       .contact-submit-wrap{display:flex;justify-content:flex-end;margin-top:.9rem}
       .contact-submit{border:0;background:#4f8eed;color:#fff;border-radius:10px;padding:.62rem 1rem;font-weight:700;cursor:pointer}
       .contact-submit:hover{background:#3b7de3}
+      .after-row .dlBtn{background:#4f8eed;color:#fff;border:none;padding:.55rem 1rem;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(79,142,237,.25);transition:background .15s, transform .1s;}
+      .after-row .dlBtn:hover{background:#3c7de0;}
+      .after-row .dlBtn:active{transform:scale(0.97);}
       @media(max-width:720px){
         .contact-grid{grid-template-columns:1fr}
       }
@@ -235,7 +238,7 @@
     </div>
 
     <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept=".heic,.HEIC,.jpg,.jpeg,.png,image/heic,image/jpeg,image/png">
+      <input type="file" id="fileInput" accept=".heic,.HEIC,.jpg,.jpeg,.png,image/heic,image/jpeg,image/png" multiple>
       <div class="drop-icon">&#128247;</div>
       <div class="drop-title">画像をドロップ または タップして選択</div>
       <div class="drop-sub">HEIC / JPEG / PNG — WebP / JPEG / PNG 変換対応</div>
@@ -311,28 +314,14 @@
       </label>
     </div>
 
-    <div class="preview-grid">
-      <div class="preview-card" id="cardBefore">
-        <img id="imgBefore" alt="元画像">
-        <div class="preview-info">
-          <div class="preview-label">変換前</div>
-          <div class="preview-name" id="nameBefore"></div>
-          <div class="preview-meta" id="metaBefore"></div>
-        </div>
-      </div>
-      <div class="preview-card" id="cardAfter">
-        <img id="imgAfter" alt="変換後">
-        <div class="preview-info">
-          <div class="preview-label">変換後</div>
-          <div class="preview-name" id="nameAfter"></div>
-          <div class="preview-meta" id="metaAfter"></div>
-        </div>
-      </div>
+    <div class="preview-grid" id="previewList">
+      <div id="previewList"></div>
     </div>
+
+    <div id="afterList"></div>
 
     <div class="status" id="status"></div>
     <button class="btn btn-convert" id="btnConvert">変換する</button>
-    <button class="btn btn-dl" id="btnDl">ダウンロード</button>
 
     <div class="ad-banner"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4465531654526233"
       crossorigin="anonymous"></script>
@@ -437,8 +426,9 @@
   <script>
   const $ = id => document.getElementById(id);
   let heifDecoder = null;
-  let currentFile = null;
-  let currentCanvas = null;
+  let currentFiles = [];
+  let currentCanvases = [];
+  let outputBlobs = [];
   let selectedFmt = 'jpeg';
   let resizeMode = 'pixel';
   let resizeWidth = 0;
@@ -446,7 +436,6 @@
   let resizeRatio = 100;
   let originalWidth = 0;
   let originalHeight = 0;
-  let outputBlob = null;
 
   function fmt(b){
     if(b<1024)return b+'B';
@@ -775,190 +764,230 @@
   dropZone.onclick = () => $('fileInput').click();
   dropZone.ondragover = e=>{e.preventDefault();dropZone.classList.add('drag-over')};
   dropZone.ondragleave = ()=>dropZone.classList.remove('drag-over');
-  dropZone.ondrop = e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])};
-  $('fileInput').onchange = ()=>{if($('fileInput').files[0])loadFile($('fileInput').files[0])};
+  dropZone.ondrop = e=>{e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files);
+    if(files.length > 0) loadFiles(files);
+  };
+  $('fileInput').onchange = ()=>{const files = Array.from($('fileInput').files);if(files.length > 0) loadFiles(files);};
 
-  async function loadFile(file){
-    currentFile = file;
-    outputBlob = null;
-    $('cardAfter').style.display = 'none';
-    $('btnDl').style.display = 'none';
+  async function loadFiles(files){
+    currentFiles = [];      // ← グローバルを初期化
+    currentCanvases = [];
+    outputBlobs = [];
+    //$('cardAfter').style.display = 'none';
+    //$('btnDl').style.display = 'none';
     setStatus('');
 
-    const ext = file.name.toLowerCase().split('.').pop();
-    const isHeic = ext==='heic';
-    const origFmt = isHeic ? 'heic' : (ext==='png'?'png':'jpeg');
+    for(const file of files){
+      //currentFiles.push(file);
+      //currentCanvases.push(canvas);
+      const ext = file.name.toLowerCase().split('.').pop();
+      const isHeic = ext==='heic';
+      const origFmt = isHeic ? 'heic' : (ext==='png'?'png':'jpeg');
 
-    if(isHeic){
-      setLoader(true,'HEICをデコード中（libheif-wasm）...');
-      try{
-        await ensureLibheifScript();
-        const buf = await file.arrayBuffer();
-        const data = new Uint8Array(buf);
+      if(isHeic){
+        setLoader(true,'HEICをデコード中（libheif-wasm）...');
+        try{
+          await ensureLibheifScript();
+          const buf = await file.arrayBuffer();
+          const data = new Uint8Array(buf);
 
-        if(!heifDecoder){
-          const lib = await libheif();
-          heifDecoder = new lib.HeifDecoder();
-        }
+          if(!heifDecoder){
+            const lib = await libheif();
+            heifDecoder = new lib.HeifDecoder();
+          }
 
-        const decoded = heifDecoder.decode(data);
-        if(!decoded||!decoded.length) throw new Error('デコード結果が空です');
-        const img = decoded[0];
-        const w = img.get_width();
-        const h = img.get_height();
+          const decoded = heifDecoder.decode(data);
+          if(!decoded||!decoded.length) throw new Error('デコード結果が空です');
+          const img = decoded[0];
+          const w = img.get_width();
+          const h = img.get_height();
 
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        const imageData = ctx.createImageData(w, h);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.createImageData(w, h);
 
-        await new Promise((res,rej)=>{
-          img.display(imageData, d=>{
-            if(!d){rej(new Error('display() 失敗'));return}
-            ctx.putImageData(d,0,0);
-            res();
+          await new Promise((res,rej)=>{
+            img.display(imageData, d=>{
+              if(!d){rej(new Error('display() 失敗'));return}
+              ctx.putImageData(d,0,0);
+              res();
+            });
           });
-        });
 
-        currentCanvas = canvas;
-        fillResizeInputs(w, h);
-        const url = canvas.toDataURL('image/jpeg',0.7);
-        showBefore(url, file.name, file.size, 'heic', w+'×'+h);
-        buildFmtPills(fmtOptions.heic, 'jpeg');
-        $('controls').style.display = 'block';
-        $('btnConvert').style.display = 'block';
-        setStatus('HEIC デコード完了', 'ok');
-      }catch(e){
-        setStatus('HEICデコードエラー: '+e.message, 'err');
-      }finally{
-        setLoader(false);
-      }
-    } else {
-      const url = URL.createObjectURL(file);
-      const imgEl = new Image();
-      imgEl.onload = ()=>{
-        const canvas = document.createElement('canvas');
-        canvas.width = imgEl.naturalWidth;
-        canvas.height = imgEl.naturalHeight;
-        canvas.getContext('2d').drawImage(imgEl, 0, 0);
-        currentCanvas = canvas;
-        fillResizeInputs(imgEl.naturalWidth, imgEl.naturalHeight);
-        showBefore(url, file.name, file.size, origFmt, imgEl.naturalWidth+'×'+imgEl.naturalHeight);
-        const def = origFmt==='png'?'webp':'jpeg';
-        buildFmtPills(fmtOptions[origFmt]||fmtOptions.jpeg, def);
-        $('controls').style.display = 'block';
-        $('btnConvert').style.display = 'block';
-        setStatus('');
-      };
+          currentFiles.push(file);
+          currentCanvases.push(canvas);
+          originalWidth = w;
+          originalHeight = h;
+          fillResizeInputs(w, h);
+          const url = canvas.toDataURL('image/jpeg',0.7);
+          showBefore(url, file.name, file.size, 'heic', w+'×'+h);
+          buildFmtPills(fmtOptions.heic, 'jpeg');
+          $('controls').style.display = 'block';
+          $('btnConvert').style.display = 'block';
+          setLoader(false);
+          setStatus('HEIC デコード完了', 'ok');
+        }catch(e){
+          console.error(e);
+          setStatus('HEICデコードエラー: '+e.message, 'err');
+          setLoader(false);
+        }
+      } else {
+        const url = URL.createObjectURL(file);
+        const imgEl = new Image();
+        imgEl.onload = ()=>{
+          const canvas = document.createElement('canvas');
+          canvas.width = imgEl.naturalWidth;
+          canvas.height = imgEl.naturalHeight;
+          canvas.getContext('2d').drawImage(imgEl, 0, 0);
+          currentFiles.push(file);
+          currentCanvases.push(canvas);
+          fillResizeInputs(imgEl.naturalWidth, imgEl.naturalHeight);
+          showBefore(url, file.name, file.size, origFmt, imgEl.naturalWidth+'×'+imgEl.naturalHeight);
+          const def = origFmt==='png'?'webp':'jpeg';
+          buildFmtPills(fmtOptions[origFmt]||fmtOptions.jpeg, def);
+          $('controls').style.display = 'block';
+          $('btnConvert').style.display = 'block';
+          setStatus('');
+        };
       imgEl.src = url;
+      }
+    }
+
+    function showBefore(url, name, size, fmtKey, dims){
+      //$('imgBefore').src = url;
+      const bdg = {'heic':'badge-heic','jpeg':'badge-jpg','jpg':'badge-jpg','png':'badge-png','webp':'badge-webp'};
+      const card = document.createElement('div');
+      card.className = 'preview-card';
+
+      card.innerHTML = `
+        <img src="${url}" alt="元画像">
+        <div class="preview-info">
+          <div class="preview-label">変換前</div>
+          <div class="preview-name">
+            ${name.length>28 ? name.slice(0,25)+'...' : name}
+            <span class="badge ${bdg[fmtKey]||'badge-jpg'}">${fmtKey.toUpperCase()}</span>
+          </div>
+          <div class="preview-meta">${fmt(size)} • ${dims}</div>
+        </div>
+      `;
+
+      // ★ previewList に追加（複数並ぶ）
+      $('previewList').appendChild(card);
     }
   }
-
-  function showBefore(url, name, size, fmtKey, dims){
-    $('imgBefore').src = url;
-    const bdg = {'heic':'badge-heic','jpeg':'badge-jpg','jpg':'badge-jpg','png':'badge-png','webp':'badge-webp'};
-    $('nameBefore').innerHTML = name.length>28?name.slice(0,25)+'...':name;
-    $('nameBefore').innerHTML += ' <span class="badge '+(bdg[fmtKey]||'badge-jpg')+'">'+fmtKey.toUpperCase()+'</span>';
-    $('metaBefore').textContent = fmt(size) + (dims?' • '+dims:'');
-    $('cardBefore').style.display = 'block';
-  }
-
   $('btnConvert').onclick = async()=>{
-    if(!currentCanvas){setStatus('先に画像を選択してください','err');return}
+    if(currentCanvases.length === 0){
+      setStatus('先に画像を選択してください','err');
+      return;
+    }
+
     $('btnConvert').disabled = true;
-    $('btnDl').style.display = 'none';
-    $('cardAfter').style.display = 'none';
     setLoader(true,'変換中...');
     setStatus('');
 
     try{
       await new Promise(r=>setTimeout(r,30));
-      const canvas = document.createElement('canvas');
-      let w = currentCanvas.width;
-      let h = currentCanvas.height;
-
-      if(resizeMode === 'ratio'){
-        const ratio = (parseInt($('ratioInput').value, 10) || resizeRatio || 100) / 100;
-        w = Math.max(1, Math.round(currentCanvas.width * ratio));
-        h = Math.max(1, Math.round(currentCanvas.height * ratio));
-        $('resizeWidth').value = w;
-        $('resizeHeight').value = h;
-      }else{
-        w = parseInt($('resizeWidth').value, 10) || currentCanvas.width;
-        h = parseInt($('resizeHeight').value, 10) || currentCanvas.height;
-        if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
-          const fromW = Math.max(1, Math.round((w / originalWidth) * originalHeight));
-          h = fromW;
-          $('resizeHeight').value = h;
-        }
-      }
-      const shouldLockAspect = resizeMode === 'ratio' ? true : $('lockAspect').checked;
-      const shouldPreventUpscale = resizeMode === 'ratio' ? true : $('preventUpscale').checked;
-      if(shouldPreventUpscale){
-        if(shouldLockAspect){
-          const ratio = Math.min(currentCanvas.width / w, currentCanvas.height / h, 1);
-          w = Math.max(1, Math.round(w * ratio));
-          h = Math.max(1, Math.round(h * ratio));
-        }else{
-          w = Math.min(w, currentCanvas.width);
-          h = Math.min(h, currentCanvas.height);
-        }
-      }
-
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(currentCanvas, 0, 0, w, h);
 
       const mimeMap = {jpeg:'image/jpeg',png:'image/png',webp:'image/webp'};
       const mime = mimeMap[selectedFmt]||'image/jpeg';
-      const q = selectedFmt==='png'?undefined:parseInt($('quality').value)/100;
-
+      const q = selectedFmt==='png' ? undefined : parseInt($('quality').value)/100;
       const isKeepExif = $('keepExif').checked;
-      let finalBlob = await new Promise(res=>canvas.toBlob(res, mime, q));
-      if(!finalBlob)throw new Error('Blob生成失敗');
 
-      if(isKeepExif && selectedFmt==='jpeg' && typeof piexif !== 'undefined'){
-        try{
-          const exifData = await new Promise((res, rej)=>{
-            const reader = new FileReader();
-            reader.onload = e=>res(e.target.result);
-            reader.onerror = ()=>rej(new Error('元画像の読み込みに失敗'));
-            reader.readAsDataURL(currentFile);
-          });
+      // ★ 複数ファイルの変換結果を保存
+      outputBlobs = [];
 
-          const newImageData = await new Promise((res, rej)=>{
-            const r = new FileReader();
-            r.onload = e=>res(e.target.result);
-            r.onerror = ()=>rej(new Error('変換後画像の読み込みに失敗'));
-            r.readAsDataURL(finalBlob);
-          });
+      for(let i=0; i<currentCanvases.length; i++){
+        const srcCanvas = currentCanvases[i];
+        const file = currentFiles[i];
 
-          const exifObj = piexif.load(exifData);
-          const exifStr = piexif.dump(exifObj);
-          const inserted = piexif.insert(exifStr, newImageData);
+        // ---- サイズ変更 ----
+        let w = srcCanvas.width;
+        let h = srcCanvas.height;
 
-          const byteString = atob(inserted.split(',')[1]);
-          const ab = new ArrayBuffer(byteString.length);
-          const ia = new Uint8Array(ab);
-          for(let i=0;i<byteString.length;i++) ia[i] = byteString.charCodeAt(i);
-          finalBlob = new Blob([ab], {type:mime});
-        }catch(e){
-          console.warn('EXIFの保持に失敗しました:', e);
+        if(resizeMode === 'ratio'){
+          const ratio = (parseInt($('ratioInput').value, 10) || resizeRatio || 100) / 100;
+          w = Math.max(1, Math.round(srcCanvas.width * ratio));
+          h = Math.max(1, Math.round(srcCanvas.height * ratio));
+        }else{
+          w = parseInt($('resizeWidth').value, 10) || srcCanvas.width;
+          h = parseInt($('resizeHeight').value, 10) || srcCanvas.height;
+
+          if($('lockAspect').checked && originalWidth > 0 && originalHeight > 0){
+            const fromW = Math.max(1, Math.round((w / originalWidth) * originalHeight));
+            h = fromW;
+          }
         }
+
+        const shouldLockAspect = resizeMode === 'ratio' ? true : $('lockAspect').checked;
+        const shouldPreventUpscale = resizeMode === 'ratio' ? true : $('preventUpscale').checked;
+
+        if(shouldPreventUpscale){
+          if(shouldLockAspect){
+            const ratio = Math.min(srcCanvas.width / w, srcCanvas.height / h, 1);
+            w = Math.max(1, Math.round(w * ratio));
+            h = Math.max(1, Math.round(h * ratio));
+          }else{
+            w = Math.min(w, srcCanvas.width);
+            h = Math.min(h, srcCanvas.height);
+          }
+        }
+
+        // ---- リサイズ用キャンバス ----
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(srcCanvas, 0, 0, w, h);
+
+        // ---- Blob 生成 ----
+        let finalBlob = await new Promise(res=>canvas.toBlob(res, mime, q));
+        if(!finalBlob) throw new Error('Blob生成失敗');
+
+        // ---- EXIF ----
+        if(isKeepExif && selectedFmt==='jpeg' && typeof piexif !== 'undefined'){
+          try{
+            const exifData = await new Promise((res, rej)=>{
+              const reader = new FileReader();
+              reader.onload = e=>res(e.target.result);
+              reader.onerror = ()=>rej(new Error('元画像の読み込みに失敗'));
+              reader.readAsDataURL(file);
+            });
+
+            const newImageData = await new Promise((res, rej)=>{
+              const r = new FileReader();
+              r.onload = e=>res(e.target.result);
+              r.onerror = ()=>rej(new Error('変換後画像の読み込みに失敗'));
+              r.readAsDataURL(finalBlob);
+            });
+
+            const exifObj = piexif.load(exifData);
+            const exifStr = piexif.dump(exifObj);
+            const inserted = piexif.insert(exifStr, newImageData);
+
+            const byteString = atob(inserted.split(',')[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for(let j=0;j<byteString.length;j++) ia[j] = byteString.charCodeAt(j);
+            finalBlob = new Blob([ab], {type:mime});
+          }catch(e){
+            console.warn('EXIFの保持に失敗しました:', e);
+          }
+        }
+
+        // ---- 複数結果を保存 ----
+        outputBlobs.push({
+          blob: finalBlob,
+          name: file.name.replace(/\.[^.]+$/,'')
+        });
       }
-      outputBlob = finalBlob;
 
-      const extMap = {jpeg:'jpg',png:'png',webp:'webp'};
-      const outName = (currentFile.name.replace(/\.[^.]+$/,'')||'converted')+'.'+extMap[selectedFmt];
-      const savings = Math.round((1-finalBlob.size/currentFile.size)*100);
-      const bdg2 = {jpeg:'badge-jpg',png:'badge-png',webp:'badge-webp'};
+      // ---- 複数ダウンロード一覧を表示 ----
+      showAfterList();
 
-      $('imgAfter').src = URL.createObjectURL(finalBlob);
-      $('nameAfter').innerHTML = outName+' <span class="badge '+(bdg2[selectedFmt]||'badge-jpg')+'">'+selectedFmt.toUpperCase()+'</span>';
-      $('metaAfter').innerHTML = fmt(finalBlob.size)+(savings>0?' <span class="badge badge-save">-'+savings+'%</span>':'');
-      $('cardAfter').style.display = 'block';
-      $('btnDl').style.display = 'block';
-      $('btnDl').dataset.name = outName;
       setStatus('変換完了！', 'ok');
+
     }catch(e){
       setStatus('変換エラー: '+e.message,'err');
     }finally{
@@ -966,14 +995,26 @@
       $('btnConvert').disabled = false;
     }
   };
+  function showAfterList(){
+    const list = $('afterList');
+    list.innerHTML = '';
 
-  $('btnDl').onclick = ()=>{
-    if(!outputBlob)return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(outputBlob);
-    a.download = $('btnDl').dataset.name||'converted';
-    a.click();
-  };
+    outputBlobs.forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'after-row';
+      row.innerHTML = `
+        <span>${item.name}</span>
+        <button class="dlBtn">ダウンロード</button>
+      `;
+      row.querySelector('.dlBtn').onclick = ()=>{
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(item.blob);
+        a.download = item.name + '.' + selectedFmt;
+        a.click();
+      };
+      list.appendChild(row);
+    });
+  }
   </script>
 
 </body>
